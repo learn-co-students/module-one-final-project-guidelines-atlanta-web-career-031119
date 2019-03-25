@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 4) do
 
-  create_table "grade", force: :cascade do |t|
+  create_table "grades", force: :cascade do |t|
     t.integer "grade_level"
   end
 
