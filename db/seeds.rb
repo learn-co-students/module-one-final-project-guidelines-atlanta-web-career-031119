@@ -1,3 +1,8 @@
+User.destroy_all
+Monster.destroy_all
+Post.destroy_all
+Comment.destroy_all
+
 maddie = User.create(name: "Maddie", location: "Atlanta, GA USA")
 sam = User.create(name: "Sam", location: "Atlanta, GA USA")
 padfoot = User.create(name: "Padfoot", location: "London, England")
