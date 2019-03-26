@@ -1,5 +1,5 @@
 require_relative '../config/environment'
+require_relative '../cli/cli_methods'
 
-
-
-puts "HELLO WORLD"
+welcome
+user_login
