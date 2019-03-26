@@ -13,14 +13,12 @@
 ActiveRecord::Schema.define(version: 20190325184353) do
 
   create_table "events", force: :cascade do |t|
-    t.string   "name"
-    t.string   "location"
-    t.string   "venue"
-    t.string   "genre"
-    t.string   "date"
-    t.string   "start_time"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "name"
+    t.string "location"
+    t.string "venue"
+    t.string "genre"
+    t.string "date"
+    t.string "start_time"
   end
 
   create_table "reviews", force: :cascade do |t|
