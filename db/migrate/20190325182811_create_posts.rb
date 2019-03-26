@@ -5,7 +5,7 @@ class CreatePosts < ActiveRecord::Migration[5.0]
       t.string :title
       t.integer :monster_id
       t.text :content
-      t.timestamp 
+      t.timestamps
     end 
   end
 end

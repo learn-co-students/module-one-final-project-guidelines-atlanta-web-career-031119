@@ -2,7 +2,7 @@
 
 def welcome
 puts "Welcome to......."
-sleep(1)
+sleep(0.5)
 puts %(=================================================================================================)
 sleep(0.1)
 puts %(     ______      ______    ___    ___   ______     ___________   ____________    _______    )
@@ -54,6 +54,7 @@ def user_login
       end
       if User.exists?(['name LIKE ?', "%#{result}%"])
        puts "Welcome back, #{result}!"
+       return User.find_by_name(result)
       else
         puts "Hmmm, I don't see that name..."
         yes_or_no = prompt.yes?("Would you like to create an account?")
@@ -62,21 +63,25 @@ def user_login
             puts "Welcome to Cryptid Hunter " + pastel.red("#{result}!")
             new_user.location = prompt.ask("What city do you live in?")
             new_user.save
-            binding.pry
+            return new_user
         end
     end
 end
 
 def menu
-    # lists options
-    # create post
-    # read posts
-    # edit post
-    # search for a monster
-    #search for a user
-    #help -display this list
-    #exit app
+    prompt = TTY::Prompt.new
+    prompt.select("What would you like to do?") do |menu|
+    menu.choice 'Write a new post', 1
+    menu.choice 'Edit a post', 2
+    menu.choice 'Read posts', 3
+    menu.choice 'Search for a monster', 4
+    menu.choice 'Search for a specific user',5
+    menu.choice 'Edit my profile', 6
+    menu.choice 'Exit', 9
+    end
 end
+
+
 
 def get_posts(user)
     user_name = User.find_by_name(user)
@@ -93,6 +98,8 @@ def edit_post(user)
     user_name = User.find_by_name(user)
     posts = user.posts
 
+
+def edit_post
     # allows logged in user to edit a post they own
 end
 
@@ -119,7 +126,3 @@ end
 def comment
     # adds a comment to a post
 end
-
-
-
-    
