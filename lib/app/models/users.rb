@@ -5,4 +5,7 @@ class User < ActiveRecord::Base
     has_many :comments
     has_many :monsters, through: :posts
 
+    validates :bio, length: { maximum: 1000,
+    too_long: "%{count} characters is the maximum allowed" }
+    
 end  

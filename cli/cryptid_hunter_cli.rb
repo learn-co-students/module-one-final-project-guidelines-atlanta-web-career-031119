@@ -2,7 +2,10 @@
     -login as user
     -create post
     -search for post
+        - get all posts
         -type in user, return list of posts
+        -search for posts about a specific monster
+        - get 5 most recent posts
     -search for monsters
         -type in monster name "Do you want posts or information?"
             -if posts return all psots about monster
