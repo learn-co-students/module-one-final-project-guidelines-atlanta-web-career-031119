@@ -1,54 +1,70 @@
 
+
 def welcome
 puts "Welcome to......."
 sleep(1)
 puts %(=================================================================================================)
-sleep(0.25)
+sleep(0.1)
 puts %(     ______      ______    ___    ___   ______     ___________   ____________    _______    )
-sleep(0.25)
-puts %(   //  __  \\   ||   _  \\   \\\  \\  /  / *||   _ \\  ||___    ___| ||___    ___ |  ||   __   \\  )  
-sleep(0.25)
-puts %(  //  /  \\__\\  ||  |  \\ |   \\\  \\/  /   ||  | \\ |     ||  |         ||  |       ||  |  \\   \\ ) 
-sleep(0.25)
-puts %( ||  |   *     ||  |__/ /    \\\    /    ||  |_/ |     ||  |         ||  |    *  ||  |  |   |)
-sleep(0.25)
+sleep(0.1)
+puts %(   //  __  \\   ||   _  \\  \\\\  \\  /  / *||   _ \\  ||___    ___| ||___    ___ |  ||   __   \\  )  
+sleep(0.1)
+puts %(  //  /  \\__\\  ||  |  \\ |  \\\\  \\/  /   ||  | \\ |     ||  | *       ||  |       ||  |  \\   \\ ) 
+sleep(0.1)
+puts %( ||  |   *     ||  |__/ /   \\\\    /    ||  |_/ |     ||  |         ||  |    *  ||  |  |   |)
+sleep(0.1)
 puts %( ||  |         ||  __  \\  *  ||  |     ||   __/   *  ||  |         ||  |       ||  |  | * |)
-sleep(0.25)
+sleep(0.1)
 puts %( ||  |       * ||  | \\  \\    ||  |   * ||  |         ||  |       * ||  |       ||  |  |   |)
-sleep(0.25)
+sleep(0.1)
 puts %( \\\\  \\     __  ||  |  \\  \\   ||  |     ||  |         ||  |         ||  |       ||  |  |   |)
-sleep(0.25)
+sleep(0.1)
 puts %(  \\\\  \\__/  /  ||  |   \\  \\  ||  |     ||  |         ||  |   *  ___||  |___    ||  |__/  /) 
-sleep(0.25)
+sleep(0.1)
 puts %(   \\\\ _____/   ||__|  * \\__\\ ||__|     ||__|         ||__|     ||___________|  ||_______/)  
-sleep(0.25)
+sleep(0.1)
 puts %(        ___    __    ___     __    ____      __   ___________    ________    _______)
-sleep(0.25)
+sleep(0.1)
 puts %(       ||  |  |  |  ||  |   |  |  ||    \\ * |  | ||___    ___|  ||       |  ||   _   \\  * ) 
-sleep(0.25)
+sleep(0.1)
 puts %(     * ||  |  |  |  ||  |   |  |  ||     \\  |  |     ||  |    * ||   ____|  ||  |  \\  |)
-sleep(0.25)
+sleep(0.1)
 puts %(       ||  |__|  |  ||  |   |  |  ||      \\ |  |     ||  |      ||  |___    ||  |__/ / ) 
-sleep(0.25)
+sleep(0.1)
 puts %(       ||   __   |  ||  | * |  |  ||  |\\    |  | *   ||  |      ||   ___|   ||  ___  \\ )
-sleep(0.25)
+sleep(0.1)
 puts %(       ||  |  |  |  ||  |   |  | *||  | \\      |     ||  |      ||  |   *   ||  |  \\  \\ ) 
-sleep(0.25)
+sleep(0.1)
 puts %( *     ||  |  |  |  ||  |   |  |  ||  |  \\     |     ||  | *    ||  |____   ||  |   \\  \\ )
-sleep(0.25)
+sleep(0.1)
 puts %(       ||  |  |  |  \\\\  \\__/   /  ||  |   \\    |     ||  |      ||       |  ||  |  * \\  \\ )
-sleep(0.25)
+sleep(0.1)
 puts %(       ||__|  |__| * \\\\_______/   ||__|    \\___|     ||__|      ||_______|  ||__|     \\__\\ )
-sleep(0.25)
+sleep(0.1)
 puts %(=================================================================================================)
 end
 
 def user_login
-    puts "Please enter your username:"
-    gets.chomp
-    # if user does not exist
-    # puts "Hmmm. I don't see that username. Would you like to create an account?"
-    # if yes run create_user
+    prompt = TTY::Prompt.new
+    pastel = Pastel.new
+    result = prompt.ask("What is your name?") do |q|
+        q.required true
+        q.validate /\A\w+\Z/
+        q.modify   :capitalize
+      end
+      if User.exists?(['name LIKE ?', "%#{result}%"])
+       puts "Welcome back, #{result}!"
+      else
+        puts "Hmmm, I don't see that name..."
+        yes_or_no = prompt.yes?("Would you like to create an account?")
+        if yes_or_no == true
+            new_user = User.create(name: result)
+            puts "Welcome to Cryptid Hunter " + pastel.red("#{result}!")
+            new_user.location = prompt.ask("What city do you live in?")
+            new_user.save
+            binding.pry
+        end
+    end
 end
 
 def menu
