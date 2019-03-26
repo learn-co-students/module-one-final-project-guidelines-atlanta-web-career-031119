@@ -25,13 +25,27 @@ require_relative '../config/environment'
     user_input = gets.chomp
     if user_input == "Yes" || user_input == "YES" || user_input == "yes"
       main_menu
+      sleep(5)
     else user_input == "No" || user_input == "NO" || user_input == "no"
       puts "Goodbye!"
     end
   end
 
   def main_menu
-    
+    puts "Main Menu"
+    puts "View a list of all courses. (1)"
+    puts "View your courses. (2)"
+    puts "Add a course. (3)"
+
+    user_input = gets.chomp
+    if user_input == "1"
+      all_courses
+    elsif user_input == "2"
+      your_course_menu
+    elsif user_input == "3"
+      add_course_menu
+    end
   end
 
 welcome
+main_menu
