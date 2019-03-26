@@ -5,5 +5,9 @@ Bundler.require
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
 require_all 'lib'
 
-
+require_relative '../cli/cli_methods'
+require_relative '../cli/user_methods'
+require_relative '../cli/monster_methods'
+require_relative '../cli/posts_methods'
+require_relative '../cli/comment_methods'
 
