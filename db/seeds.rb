@@ -7,7 +7,8 @@ Material.destroy_all
 10.times do
 User.create(
   name: Faker::Name.name,
-  age: Faker::Number.between(12, 18)
+  age: Faker::Number.between(12, 18),
+  #grade_id: Grade.all.sample.id
 )
 end
 
@@ -17,9 +18,9 @@ end
   )
 end
 
-chemistry = Subject.create(name: "Chemistry", grade_level: 7)
-american_history = Subject.create(name: "American History", grade_level: 7)
-public_speaking = Subject.create(name: "Public Speaking", grade_level: 8)
+chemistry = Subject.create(name: "Chemistry", grade_id: Grade.all.sample.id)
+american_history = Subject.create(name: "American History", grade_id: Grade.all.sample.id)
+public_speaking = Subject.create(name: "Public Speaking", grade_id: Grade.all.sample.id)
 
 compositon_book = Material.create(name: "composition book", subject: chemistry)
 goggles = Material.create(name: "goggles", subject: chemistry)
