@@ -6,27 +6,26 @@ require_relative './models/event'
 require_relative './models/review'
 require_relative './models/ticket'
 
-<<<<<<< HEAD
-prompt = TTY::Prompt.new
-=======
-class TicTalkApp
 
+prompt = TTY::Prompt.new
+
+class TicTalkApp
+  @@prompt = TTY::Prompt.new
   attr_accessor :user
 
   def self.call
-    prompt = TTY::Prompt.new
-    welcome_message
-    choice = main_menu
-    next_step(choice)
+    @@prompt
+    self.welcome_message
+    self.main_menu
   end
 
-  def welcome_message
+  def self.welcome_message
     puts "Welcome to TicTalk"
     find_out_who
   end
 
-  def find_out_who
-    name = prompt.ask("Please enter your name to continue:")
+  def self.find_out_who
+    name = @@prompt.ask("Please enter your name to continue:")
     if User.all.find_by(name: name)
       puts "Welcome back!"
       @user = User.all.find_by(name: name)
@@ -36,33 +35,61 @@ class TicTalkApp
     end
   end
 
-  def main_menu
-    prompt.select("Main Menu", %w(Search My_Wish_List My_Upcoming_Events My_Past_Events Dashboard Logout))
-  end
-
-
-  def next_step(choice)
+  def self.main_menu
+    choice = @@prompt.select("Main Menu", %w(Search My_Wish_List My_Upcoming_Events My_Past_Events Dashboard Logout))
     if choice == "Search"
-      run_search
-    elsif 
+      self.run_search
+    elsif
       choice == "My_Wish_List"
       wish_list
-    elsif 
+    elsif
       choice == "My_Upcoming_Events"
       upcoming_events
-    elsif 
+    elsif
       choice == "My_Past_Event"
       past_events
-    elsif 
+    elsif
       choice == "Dashboard"
       dashboard
-    elsif 
+    elsif
       choice == "Logout"
-      logout
+      self.logout
     end
   end
 
-  def run_search
+  def self.run_search
+    choice = @@prompt.select("Search Menu", %w( By_Date By_Location By_Genre By_Venue By_Name Return_to_Main_Menu))
+    if choice == "By_Date"
+      self.by_date
+    elsif
+      choice == "By_Location"
+      self.by_location
+    elsif
+      choice == "By_Genre"
+      self.by_genre
+    elsif
+      choice == "By_Venue"
+      self.by_venue
+    elsif
+      choice == "By_Name"
+      self.by_name
+    elsif
+      choice == "Return_to_Main_Menu"
+      self.main_menu
+    end
+  end
+
+  def self.by_date
+    entry = @@prompt.ask("Please enter the date you want to look for: (MM/DD/YY)")
+    list = Event.where('date = ?', entry)
+    if list == []
+      puts "Sorry no events on this day. Choose again."
+      self.by_date
+    else
+    choices = list.map{|x| x.name}
+    selection = @@prompt.select("Select Your Event", choices)
+    end
+    binding.pry
   end
 
   def wish_list
@@ -77,7 +104,8 @@ class TicTalkApp
   def dashboard
   end
 
-  def logout
+  def self.logout
+    puts "Thanks for stopping by!"
+    self.call
   end
-end 
->>>>>>> 9a96b41e08d39760ccc70cda787b14b2a9a77e42
+end
