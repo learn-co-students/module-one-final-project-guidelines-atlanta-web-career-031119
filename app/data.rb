@@ -7,4 +7,6 @@ url = "https://app.ticketmaster.com/discovery/v2/events.json?size=50&apikey=7elx
 response = RestClient.get(url)
 data = JSON.parse(response.body)
 
+binding.pry
+
 File.write('./raw_data.rb', data)
