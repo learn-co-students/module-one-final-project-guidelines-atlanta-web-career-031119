@@ -13,15 +13,16 @@ end
 def menu_banner(menu = "Menu")
     clear_screen
     puts
-    puts "   Movie Tracker: #{menu}"
-    puts "======================================="
+    puts "   Movie Watchers: #{menu}"
+    puts "========================================"
 end
 
 def login
     clear_screen
     puts
-    puts "  --  Welcome to Movie Tracker!!!  --"
-    puts "======================================="
+    puts "  --  Welcome to Movie Watchers!!!  --"
+    puts "========================================"
+    puts "   Where we watch your movies for you!"
     main_menu
 end
 
@@ -38,30 +39,42 @@ def main_menu
     puts
     print "=> "
     response = gets.chomp
-    response = response.downcase
     check_responses(response, menu)
 end
 
 def check_responses(response, menu)
-    if response == '1' and User.all.size != 0
-        logging_in_user
-    elsif response == '1' and User.all.size == 0
-        puts
-        puts "There are currently no users.\nYou must create a new profile.\n(Press Enter to continue)"
-        gets
-        login
-    elsif response == '2'
-        create_profile
-    elsif response == 'q' or response == 'quit' or response == 'exit'
+    response = response.downcase
+    if response == 'q' or response == 'quit' or response == 'exit'
+        clear_screen
         exit
-    else
-        menu_banner("Main Menu")
-        main_menu
     end
+    if menu == "main"
+        if response == '1' and User.all.size != 0
+            logging_in_user
+        elsif response == '1' and User.all.size == 0
+            puts
+            puts "There are currently no users.\nYou must create a new profile.\n(Press Enter to continue)"
+            gets
+            login
+        elsif response == '2'
+            create_profile
+        else
+            menu_banner("Main Menu")
+            main_menu
+        end
+    end
+    if menu == 'profile'
+        if response == 'b' or response == 'back'
+            menu_banner("Main Menu")
+            main_menu
+        end
+    end
+end
 
 def create_profile
     menu_banner("Profile Creation")
     menu = "profile"
+    create_new = true
     puts
     puts "Create a new user profile. A name is required.\nIt must be between 6 and 16 characters long.\n(Type 'Q' to exit or 'B' to go back)"
     puts
@@ -76,21 +89,26 @@ def create_profile
     end
     if User.all.size == 0
         User.create(name: response)
-    else
+        menu_banner("Main Menu")
+        main_menu
+    end
+    if User.all.size != 0
         for index in 0...User.all.size
             if User.all[index].name.downcase == response.downcase
                 puts
                 puts "Sorry, that user name is already taken. Please try again."
                 gets
+                create_new = false
                 create_profile
             end
         end
+    end
+    if create_new == true
         User.create(name: response)
     end
-
+    menu_banner("Main Menu")
+    main_menu
 end
-
-
-
+binding.pry
 
     
