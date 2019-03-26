@@ -1,4 +1,6 @@
 require 'pry'
+require 'rest-client'
+require 'json'
 
 def clear_screen
     if RUBY_PLATFORM =~ /win32|win64|\.NET|windows|cygwin|mingw32/i
@@ -11,8 +13,8 @@ end
 def main_menu
     clear_screen
     puts
-    puts "  --  Welcome to Movies Pointer!!!  --"
-    puts "========================================"
+    puts "  --  Welcome to Movie Tracker!!!  --"
+    puts "======================================="
     # if User.all.size == 0
     #     create_profile
     # end
@@ -40,6 +42,16 @@ def main_menu
         main_menu
     end
 end
+
+def create_profile
+
+
+
+
+
+
+
+
 
 main_menu
     
