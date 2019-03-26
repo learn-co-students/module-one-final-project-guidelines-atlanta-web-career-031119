@@ -35,7 +35,7 @@ data["_embedded"]["events"].each do |event|
     date = event["dates"]["start"]["localDate"]
     start_time = event["dates"]["start"]["localTime"]
     seed_line = "Event.create(name: \"#{name}\",location: \"#{location}\",venue: \"#{venue}\",genre: \"#{genre}\",date: \"#{date}\",start_time: \"#{start_time}\")"
-    File.open('./db/seeds.rb',"a") do |line|
+    File.open('../db/seeds.rb',"a") do |line|
       line.puts "\r" + seed_line
     end
 end
