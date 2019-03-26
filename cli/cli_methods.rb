@@ -79,18 +79,40 @@ def menu
 end
 
 def get_posts(user)
+    user_name = User.find_by_name(user)
+    posts = user.posts
+    post.each do |post|
+    puts "Title: #{posts.title}"
+    puts "Posts: #{posts.content}"
+    end
+
     # prints posts from logged in user
 end
 
-def edit_post
+def edit_post(user)
+    user_name = User.find_by_name(user)
+    posts = user.posts
+
     # allows logged in user to edit a post they own
 end
 
-def delete_post
+def delete_post(user)
+    user_name = User.find_by_name(user)
+    posts = user.posts
+    posts.destroy
+
     # allows user to delete a post they own
 end
 
-def get_comments_on_posts
+def get_comments_on_posts(user)
+    up = get_posts(user)
+    up.each do |posts|
+    c = posts.comments
+    c.each do |c|
+    puts "#{c.name} says: #{c.content}"
+    
+    
+    
     #prints comments on posts owned by user
 end
 
