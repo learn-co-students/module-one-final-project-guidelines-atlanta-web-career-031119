@@ -166,11 +166,20 @@ class TicTalkApp
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
 
     my_upcoming_events = my_bought_events.select {|event| event.date > DateTime.now.to_s[0..9] }
-    my_upcoming_list = my_upcoming_events.map {|event| event.name }
+    #my_upcoming_list = my_upcoming_events.map {|event| event.name }
+    my_upcoming_list = my_upcoming_events.map do |ticket|
+     x = {}
+     x[:name] = Event.find(ticket.id).name
+     x[:value] = ticket.id
+     x
+   end
     selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
     display_event(selection)
-    selection2 = @@prompt.select("Next?", ["View Other Upcoming Events", "Return to Main Menu"])
-    if selection2 == "View Other Upcoming Events"
+    selection2 = @@prompt.select("Next?", ["Leave a Comment", "View Other Upcoming Events", "Return to Main Menu"])
+    if selection2 == "Leave a Comment"
+      add_comment(selection)
+    elsif
+      selection2 =="View Other Upcoming Events"
       upcoming_events
     else
       main_menu
@@ -268,6 +277,11 @@ class TicTalkApp
     Ticket.update(selection, :status => "bought")
 
     main_menu
+  end
+
+  def self.add_comment(selection)
+    binding.pry
+    x = Review.create(user_id: @user.id, event_id: selection.id, recommend: nil)
   end
 
   #def self.find_or_create_ticket(display, selection)
