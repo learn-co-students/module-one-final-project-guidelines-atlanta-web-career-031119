@@ -82,7 +82,7 @@ class TicTalkApp
   end
 
   def self.by_date
-    entry = @@prompt.ask("Please enter the date you want to look for: (MM/DD/YY)")
+    entry = @@prompt.ask("Please enter the date you want to look for: (YYYY/MM/DD)")
     list = Event.where('date = ?', entry)
     if list == []
       puts "Sorry no events on this day. Choose again."
@@ -90,7 +90,8 @@ class TicTalkApp
     else
     choices = list.map{|x| x.name}
     selection = @@prompt.select("Select Your Event", choices)
-    display_event(selection)
+    display = display_event(selection)
+    ticket_options(display)
     end
   end
 
@@ -103,21 +104,19 @@ class TicTalkApp
     else
     choices = list.map{|x| x.name}
     selection = @@prompt.select("Select Your Event", choices)
-    display_event(selection)
+    display = display_event(selection)
+    ticket_options(display)
     end
   end
 
   def self.by_venue
-    entry = @@prompt.ask("Please enter the venue you want to search:")
-    list = Event.where('venue = ?', entry)
-    if list == []
-      puts "Sorry no events in this location. Choose again."
-      self.by_location
-    else
-    choices = list.map{|x| x.name}
+    list = Event.all.map { |x| x.venue  }
+    entry = @@prompt.select("Please select from the following venues:", list.uniq)
+    events = Event.where('venue = ?', entry)
+    choices = events.map{|x| x.name}
     selection = @@prompt.select("Select Your Event", choices)
-    display_event(selection)
-    end
+    display = display_event(selection)
+    ticket_options(display)
   end
 
   def self.by_genre
@@ -126,33 +125,36 @@ class TicTalkApp
     events = Event.where('genre = ?', entry)
     choices = events.map{|x| x.name}
     selection = @@prompt.select("Select Your Event", choices)
-    display_event(selection)
-
+    display = display_event(selection)
+    ticket_options(display)
   end
 
   def self.by_name
-    entry = @@prompt.ask("Please enter the name of the event you want to search for:")
-    list = Event.where('name = ?', entry)
-    if list == []
-      puts "Sorry no events by that name. Choose again."
-      self.by_location
-    else
-    choices = list.map{|x| x.name}
+    list = Event.all.map { |x| x.name  }
+    entry = @@prompt.select("Please select from the following events:", list.uniq)
+    events = Event.where('name = ?', entry)
+    choices = events.map{|x| x.name}
     selection = @@prompt.select("Select Your Event", choices)
-    display_event(selection)
-    end
+    display = display_event(selection)
+    ticket_options(display)
   end
 
   def self.wish_list
     wish_tickets = Ticket.where('status = ? AND user_id = ?', 'wish', @user.id)
-    my_wish_list = wish_tickets.map do |ticket|
-      x = {}
-      x[:name] = Event.find(ticket.event_id).name
-      x[:value] = Event.find(ticket.event_id).id
-      x
+    if wish_tickets == nil
+      puts "You haven't chosen anything yet!?!"
+      main_menu
+    else
+      my_wish_list = wish_tickets.map do |ticket|
+       x = {}
+       x[:name] = Event.find(ticket.event_id).name
+       x[:value] = ticket.id
+       x
+      end
     end
-    selection = @@prompt.select("Which one would you like to buy?", my_wish_list)
-    self.update_ticket_status(selection)
+    selection = @@prompt.select("Select an Event for more details and to purchase a ticket", my_wish_list)
+
+    self.display_event_from_wishlist(selection)
   end
 
   def self.bought_list
@@ -160,11 +162,19 @@ class TicTalkApp
   end
 
   def self.upcoming_events
+
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
-    # binding.pry
+
     my_upcoming_events = my_bought_events.select {|event| event.date > DateTime.now.to_s[0..9] }
     my_upcoming_list = my_upcoming_events.map {|event| event.name }
     selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
+    display_event(selection)
+    selection2 = @@prompt.select("Next?", ["View Other Upcoming Events", "Return to Main Menu"])
+    if selection2 == "View Other Upcoming Events"
+      upcoming_events
+    else
+      main_menu
+    end
   end
 
   def self.past_events
@@ -172,6 +182,13 @@ class TicTalkApp
     my_past_events = my_bought_events.select {|event| event.date < DateTime.now.to_s[0..9] }
     my_past_list = my_past_events.map {|event| event.name }
     selection = @@prompt.select("Here are your Past events", my_past_list)
+    display_event(selection)
+    selection2 = @@prompt.select("Next?", ["View Other Past Events", "Return to Main Menu"])
+    if selection2 == "View Other Past Events"
+      past_events
+    else
+      main_menu
+    end
   end
 
   def dashboard
@@ -187,6 +204,10 @@ class TicTalkApp
     puts "Selected Event:"
     puts display.date, display.name
     puts display.venue, display.location
+    display
+  end
+
+  def self.ticket_options(display)
     options = ["Add to MyWish List","Buy a ticket","Return to Search","Return to Main Menu"]
     choice = @@prompt.select("What would you like to do?", options)
     if choice == "Add to MyWish List"
@@ -207,18 +228,46 @@ class TicTalkApp
     end
   end
 
+  def self.display_event_from_wishlist(selection)
+    display1 = Ticket.find(selection)
+    display = Event.find(display1.event_id)
+    puts "Selected Event:"
+    puts display.date, display.name
+    puts display.venue, display.location
+    options = ["Buy this ticket","Remove from Wishlist","Return to Search","Return to Main Menu"]
+    choice = @@prompt.select("What would you like to do?", options)
+    if choice == "Buy this ticket"
+      self.update_ticket_status(selection)
+      puts "Great! What would you like to do next?"
+      main_menu
+    elsif
+      choice == "Remove from Wishlist"
+      Ticket.delete(selection)
+      puts "We have cleared that out for you. What would you like next?"
+      main_menu
+    elsif
+      choice == "Return to Search"
+      self.run_search
+    else
+      choice == "Return to Main Menu"
+      self.main_menu
+    end
+  end
+
   def self.add_to_wishlist(display)
     x = Ticket.create(user_id: @user.id, event_id: display.id, status: "wish")
   end
 
   def self.buy_a_ticket(display)
+
     x = Ticket.create(user_id: @user.id, event_id: display.id, status: "bought")
   end
 
   def self.update_ticket_status(selection)
-    wish_tickets = Ticket.where('status = ? AND user_id = ?', 'wish', @user.id)
-    ticket_to_update = wish_tickets.find{|x| x.name == selection}
-    Ticket.update(ticket_to_update.id, :status => "bought")
+
+    Ticket.update(selection, :status => "bought")
+
+    main_menu
   end
 
   #def self.find_or_create_ticket(display, selection)
