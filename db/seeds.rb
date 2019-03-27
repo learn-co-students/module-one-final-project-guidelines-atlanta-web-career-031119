@@ -15,13 +15,13 @@ stella = User.create(name: "Stella")
 brian = User.create(name: "Brian")
 carol = User.create(name: "Carol")
 
-hawks_gm1 = Event.create(name: "Atlanta Hawks vs LA Lakers",location: "Atlanta",venue: "State Farm Arena",genre: "basketball",date: "03/30/19",start_time: "7:00")
-drake = Event.create(name: "Drake World Tour", location: "Atlanta",venue: "Infinite Energy Center",genre: "rap",date: "03/30/19",start_time: "8pm")
-hawks_gm2 = Event.create(name: "Atlanta Hawks vs Brooklyn Nets",location: "Atlanta",venue: "State Farm Arena",genre: "basketball",date: "04/04/19",start_time: "7:00")
-imagine_dragons = Event.create(name: "Imagine Dragons Tour",location: "Atlanta",venue: "Fox Theatre",genre: "rock",date: "04/06/19",start_time: "8pm")
-hawks_gm3 = Event.create(name: "Atlanta Hawks vs Miami Heat",location: "Atlanta",venue: "State Farm Arena",genre: "basketball",date: "04/07/19",start_time: "7:00")
-meek_mill = Event.create(name: "All Stars", location: "Atlanta",venue: "Infinite Energy Center",genre: "rap",date: "04/20/19",start_time: "9pm")
-dead_and_company = Event.create(name: "2019 Summer Tour", location: "Atlanta",venue: "Lakewood Ampitheater",genre: "rock",date: "06/29/19",start_time: "8pm")
+# hawks_gm1 = Event.create(name: "Atlanta Hawks vs LA Lakers",location: "Atlanta",venue: "State Farm Arena",genre: "basketball",date: "03/30/19",start_time: "7:00")
+# drake = Event.create(name: "Drake World Tour", location: "Atlanta",venue: "Infinite Energy Center",genre: "rap",date: "03/30/19",start_time: "8pm")
+# hawks_gm2 = Event.create(name: "Atlanta Hawks vs Brooklyn Nets",location: "Atlanta",venue: "State Farm Arena",genre: "basketball",date: "04/04/19",start_time: "7:00")
+# imagine_dragons = Event.create(name: "Imagine Dragons Tour",location: "Atlanta",venue: "Fox Theatre",genre: "rock",date: "04/06/19",start_time: "8pm")
+# hawks_gm3 = Event.create(name: "Atlanta Hawks vs Miami Heat",location: "Atlanta",venue: "State Farm Arena",genre: "basketball",date: "04/07/19",start_time: "7:00")
+# meek_mill = Event.create(name: "All Stars", location: "Atlanta",venue: "Infinite Energy Center",genre: "rap",date: "04/20/19",start_time: "9pm")
+# dead_and_company = Event.create(name: "2019 Summer Tour", location: "Atlanta",venue: "Lakewood Ampitheater",genre: "rock",date: "06/29/19",start_time: "8pm")
 
 
 

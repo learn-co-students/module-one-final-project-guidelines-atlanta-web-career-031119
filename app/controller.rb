@@ -149,10 +149,23 @@ class TicTalkApp
     selection = @@prompt.select("Which one would you like to buy?", my_wish_list)
   end
 
-  def upcoming_events
+  def self.bought_list
+    Ticket.where('status = ? AND user_id = ?', 'bought', @user.id)
   end
 
-  def past_events
+  def self.upcoming_events
+    my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
+    # binding.pry
+    my_upcoming_events = my_bought_events.select {|event| event.date > DateTime.now.to_s[0..9] }
+    my_upcoming_list = my_upcoming_events.map {|event| event.name }
+    selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
+  end
+
+  def self.past_events
+    my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
+    my_past_events = my_bought_events.select {|event| event.date < DateTime.now.to_s[0..9] }
+    my_past_list = my_past_events.map {|event| event.name }
+    selection = @@prompt.select("Here are your Past events", my_past_list)
   end
 
   def dashboard
