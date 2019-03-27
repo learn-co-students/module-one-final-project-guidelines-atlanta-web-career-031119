@@ -12,13 +12,21 @@ def search_users_by_name
     prompt.select("Which user are you looking for?", choices)
 end
 
+def get_user_profile(user)
+    monsters = user.monsters
+    puts "Name: #{user.name}"
+    puts "Location: #{user.location}"
+    puts "#{user.bio}"
+    puts "Monsters encountered: #{monsters.pluck(:name).uniq.join(', ')}."
+end
+
 def get_user_by_name(selection)
     user = User.find_by_name(selection)
     monsters = user.monsters
     puts "Name: #{user.name}"
     puts "Location: #{user.location}"
     puts "#{user.bio}"
-    puts "Monsters encountered: #{monsters.pluck(:name).join(', ')}."
+    puts "Monsters encountered: #{monsters.pluck(:name).uniq.join(', ')}."
 end
 
 
@@ -44,6 +52,16 @@ def profile_menu
         menu.choice "Edit my profile", 2
     end
 end
+
+def view_profile_menu
+    view_menu = TTY::Prompt.new
+    view_menu.select("What would you like to see?") do |menu|
+        menu.choice "Profile", 1
+        menu.choice "My posts", 2
+        menu.choice "Comments on my posts", 3
+    end
+end
+
 
 def update_profile_menu
     update_menu = TTY::Prompt.new
