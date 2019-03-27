@@ -12,11 +12,10 @@ User.create(
 )
 end
 
-10.times do
-  Grade.create(
-    grade_level: Faker::Number.between(7, 12)
-  )
-end
+freshman = Grade.create(grade_level: 9)
+sophomore = Grade.create(grade_level: 10)
+junior = Grade.create(grade_level: 11)
+senior = Grade.create(grade_level: 12)
 
 chemistry = Subject.create(name: "Chemistry", grade_id: Grade.all.sample.id)
 american_history = Subject.create(name: "American History", grade_id: Grade.all.sample.id)
