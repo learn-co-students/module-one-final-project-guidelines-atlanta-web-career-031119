@@ -16,7 +16,6 @@ def menu_banner(menu = "Menu")
     puts "   Film Watchlist: #{ menu }"
     puts "========================================"
     puts
-    puts
 end
 
 def login
@@ -25,7 +24,6 @@ def login
     puts "  --  Welcome to Film Watchlist!!!  --"
     puts "========================================"
     puts "   Where we watch your films for you!"
-    puts
     puts
     main_menu
 end
@@ -36,6 +34,7 @@ def main_menu
     puts
     puts " 1) Returning user"
     puts " 2) Create a new profile"
+    puts
     puts "* Type 'Q' or 'Quit' to exit *"
     puts
     puts
@@ -62,7 +61,7 @@ def check_responses(response, menu)
         clear_screen
         exit
     end
-    if menu == 'profile' or menu == 'logging in' or menu == "user"
+    if menu == 'profile' or menu == 'logging in' or menu == "user" or menu == 'search'
         if response == 'm' or response == 'main' or response == 'main menu'
             menu_banner("Main Menu")
             main_menu
@@ -72,6 +71,10 @@ end
 
 def go_back_menu
     puts "\n(Type 'Q' to exit or 'M' to go back to the main menu)\n"
+end
+
+def go_back_user_menu
+    puts "\n(Type 'Q' to quit, 'M' for main menu, or 'user_menu' for user menu)\n"
 end
 
 def check_user_name(response)
@@ -167,7 +170,8 @@ def user_menu(current_user)
     puts " 4) Switch user"
     puts " 0) Delete profile (Warning!!!)"
     go_back_menu
-    print "=> "
+    puts
+    print " => "
     response = gets.chomp
     check_responses(response, menu)
     if response == '1'
@@ -241,6 +245,92 @@ def delete_profile(current_user)
     user_menu(current_user)
 end
 
+def movie_search(current_user)
+    menu_banner("Search Menu")
+    puts " Searching for Movies!\n\n You can search for movies by title to get information about them.\n"
+    puts
+    puts " 1) Feeling lucky! search (returns first closest match)"
+    puts " 2) Broad search (returns a number of movies with the title in the name)"
+    puts " 3) Database search (returns movies that all users have saved)"
+    go_back_user_menu
+    print " => "
+    response = gets.chomp
+    check_responses(response, "user")
+    if response == '1'
+        lucky_search(current_user)
+    elsif response == '2'
+        broad_search(current_user)
+    elsif response == '3'
+        database_search(current_user)
+    else
+        movie_search(current_user)
+    end
+end
+
+def add_movie_to_database(movie_info)
+    Movie.create(title: movie_info["Title"], release_date: movie_info["Released"], plot: movie_info["Plot"], runtime: movie_info["Runtime"], rating: movie_info["imdbRating"].to_f, main_cast: movie_info["Actors"])
+end
+
+def display_movie_info(info)
+    menu_banner("Movie Info")
+    puts "This is what we found:"
+    puts
+    puts " Title        ~  #{ info.title }"
+    puts " Release date ~  #{ info.release_date }"
+    puts " Avg. Rating  ~  #{ info.rating }"
+    puts " Runtime      ~  #{ info.runtime }"
+    puts " Main cast    ~  #{ info.main_cast }"
+    puts " Plot         ~  #{ info.plot[0..100] }"
+    puts "                 #{ info.plot[101..200] }"
+    puts "                 #{ info.plot[201..300] }"
+    puts
+    return
+end
+
+def lucky_search(current_user)
+    menu_banner("Feeling Lucky!")
+    puts "Enter the name of the movie you would like to find:\n"
+    go_back_user_menu
+    print " => "
+    response = gets.chomp
+    check_responses(response, 'search')
+    if response.downcase == 'user_menu'
+        user_menu(current_user)
+    end
+    movie_info = JSON.parse(RestClient.get("http://www.omdbapi.com/?t=#{response}&apikey=92d4118f&"))
+    check = Movie.where(title: movie_info["Title"], release_date: movie_info["Released"])
+    if check.size == 0
+        add_movie_to_database(movie_info)
+        puts "New movie detected! Automatically added to database!"
+        gets
+    end
+    id_num = Movie.where(title: movie_info["Title"], release_date: movie_info["Released"]).ids[0]
+    info = Movie.find(id_num)
+    while true
+        display_movie_info(info)
+        puts "Would you like to add this movie to your watchlist?\n(1 or 'Y' for yes, 2 or 'N' for no)"
+        puts
+        print " => "
+        response = gets.chomp.downcase
+        check_responses(response, 'search')
+        if response == '1' or response == 'y' or response == 'yes'
+            check = MovieWatchlist.where("user_id = #{current_user.id} and movie_id = #{info.id}")
+            if check.size != 0
+                puts "You already have this movie in your list!\n(Press Enter to continue...)"
+                gets
+                movie_search(current_user)
+            end
+            MovieWatchlist.create(user_id: current_user.id, movie_id: info.id, rating: 0.0, review: "Has not been reviewed yet.", watched: false)
+            puts "Movie was added to your watchlist! We'll be sure to keep an eye on it for you."
+            gets
+            movie_search(current_user)
+        elsif response == '2' or response == 'n' or response == 'no'
+            movie_search(current_user)
+        else
+            next
+        end
+end
+
 def view_watchlist(current_user)
     movie_list = []
     MovieWatchlist.all.each do |item|
@@ -250,7 +340,7 @@ def view_watchlist(current_user)
     end
     menu_banner(current_user.name)
     if movie_list.size == 0
-        puts "* Unfortunately, you don't have any movies in your list yet.\nYou should search for movies to add. *"
+        puts "* Aww, it seems you don't have any movies in your list yet.\nYou should search for movies and add them in!  <(^_^)> *"
         gets
         user_menu(current_user)
     end
@@ -266,6 +356,8 @@ def view_watchlist(current_user)
             puts "   #{ index + 1 })\t #{ movie_list[index].title }"
         end
     end
+    gets
+    watchlist_menu(current_user, movie_list)
 end
 
 

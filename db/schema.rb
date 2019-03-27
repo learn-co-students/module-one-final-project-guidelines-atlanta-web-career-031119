@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20190325205845) do
     t.float  "rating"
     t.string "runtime"
     t.text   "plot"
+    t.text   "main_cast"
   end
 
   create_table "users", force: :cascade do |t|

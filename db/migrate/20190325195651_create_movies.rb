@@ -6,6 +6,7 @@ class CreateMovies < ActiveRecord::Migration[5.0]
       t.float   :rating
       t.string  :runtime
       t.text    :plot
+      t.text    :main_cast
     end
   end
 end
