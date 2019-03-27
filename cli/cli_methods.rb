@@ -62,6 +62,7 @@ def user_login
             new_user = User.create(name: result)
             puts "Welcome to Cryptid Hunter " + pastel.red("#{result}!")
             new_user.location = prompt.ask("What city do you live in?")
+            new_user.bio = prompt.ask("Tell us a little about yourself!")
             new_user.save
             return new_user
         end
@@ -76,7 +77,7 @@ def menu
     menu.choice 'Read posts', 3
     menu.choice 'Search for a monster', 4
     menu.choice 'Search for a specific user',5
-    menu.choice 'Edit my profile', 6
+    menu.choice 'My profile', 6
     menu.choice 'Exit', 9
     end
 end

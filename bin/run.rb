@@ -2,14 +2,23 @@ require_relative '../config/environment'
 
 
 welcome
-current_user = user_login
-current_user = get_posts
 @current_user = user_login
 menu_choice = nil
 until menu_choice == 9 
     #------------MAIN MENU-------------#
 menu_choice = menu
 
+    #----------CREATE POST-----------#
+    if menu_choice == 1
+        create_new_post
+    end
+
+    #------------EDIT POST-----------#
+    if menu_choice == 2
+        selection = edit_post_selection(@current_user)
+        post_to_edit = Post.find_by_title(selection)
+        edit_post(post_to_edit)
+    end
 
     #------------READ POSTS MENU-------------#
 if menu_choice == 3
@@ -48,9 +57,19 @@ if menu_choice == 5
     get_user_by_name(selection)
 end
 
-    #------------EDIT PROFILE MENU-------------#
+    #------------MY PROFILE MENU-------------#
 if menu_choice == 6
     answer = profile_menu
+        #view profile
+        if answer == 1
+          selection = view_profile_menu
+          if selection == 1
+            get_user_profile(@current_user)
+          elsif selection == 2
+            print_posts_current_user(@current_user)
+          end
+        end 
+        #edit profile
         if answer == 2
         option = update_profile_menu
         if option == 1
