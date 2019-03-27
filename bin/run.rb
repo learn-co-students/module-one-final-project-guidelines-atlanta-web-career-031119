@@ -13,15 +13,15 @@ end
     interpolated = font.write("Conquer College")
 
     puts "WELCOME TO"
-    sleep(2)
+    # sleep(2)
     puts interpolated
-    sleep(3)
+    # sleep(3)
 
     puts "Teachers often provide a list of suggested school supplies you'll need for their class."
-    sleep(2)
+    # sleep(2)
 
     puts "Here at Conquer College, find out what supplies you'll actually need based from actual students."
-    sleep(2)
+    # sleep(2)
 
     puts "Would you like to continue? Yes or No"
 
@@ -68,10 +68,11 @@ end
     puts "View a list of all courses. (1)"
     puts "View your courses. (2)"
     puts "Add a course. (3)"
-    puts "Find reviews for a course. (4)"
+    puts "View all materials for a course (4)"
     puts "Update materials needed for a course. (5)"
     puts "View all materials for a grade. (6)"
     puts "See all users in a grade. (7)"
+    puts "Exit Application (8)."
 
     user_input = gets.chomp
     if user_input == "1"
@@ -81,13 +82,15 @@ end
     elsif user_input == "3"
       add_course_menu
     elsif user_input == "4"
-      find_reviews
+      materials_for_course
     elsif user_input == "5"
       update_materials
     elsif user_input == "6"
       materials_for_grade
     elsif user_input == "7"
       all_users_in_x_grade
+    else user_input == "8"
+      exit
     end
   end
 
@@ -108,6 +111,16 @@ end
     name = gets.chomp
     Subject.create(name: name, grade_id: @user.grade_id)
     puts "You have added #{name} to your course list!"
+    main_menu
+  end
+
+  def materials_for_course
+    puts "Which course?"
+    course1 = gets.chomp
+    subject2 = Subject.all.find{|x| x.name == course1}
+    mats = subject2.materials
+    name = mats.map {|x| x.name}.join(" ")
+    puts "The Materials for grade #{course1} are: #{name}"
     main_menu
   end
 
@@ -135,6 +148,11 @@ end
     grade = gets.chomp.to_i
     users =  Grade.all.find {|x| x.grade_level == grade}.users.map {|x| x.name}.join (" ")
     puts "The Users for grade #{grade} are: #{users}"
+    main_menu
+  end
+
+  def exit
+  puts "GOOD BYE"
   end
 
 end
