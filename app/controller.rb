@@ -142,6 +142,8 @@ class TicTalkApp
   end
 
   def wish_list
+    Event.where()
+    selection = @@prompt.select("Which one would you like to buy?", x)
   end
 
   def upcoming_events
@@ -171,6 +173,8 @@ class TicTalkApp
     elsif
       choice == "Buy_a_ticket"
       self.buy_a_ticket(display)
+      puts "Great! What would you like to do next?"
+      main_menu
     elsif
       choice == "Return_to_Search"
       self.run_search
