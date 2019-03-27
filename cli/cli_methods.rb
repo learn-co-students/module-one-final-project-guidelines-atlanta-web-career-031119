@@ -1,66 +1,72 @@
 
+  @pastel = Pastel.new
+  @straight = TTY::Font.new(:straight)
+  @blocks = TTY::Font.new(:standard)
+  @doom = TTY::Font.new(:doom)
 
+  @pastel.alias_color(:command, :red, :bold)
 def welcome
-puts "Welcome to......."
+
+puts @pastel.command(@straight.write("Welcome to......"))
 sleep(0.5)
-puts %(=================================================================================================)
+puts @pastel.bright_cyan(%(=================================================================================================))
 sleep(0.1)
-puts %(     ______      ______    ___    ___   ______     ___________   ____________    _______    )
+puts @pastel.bright_magenta.bold(%(     ______      ______    ___    ___   ______     ___________   ____________    _______    ))
 sleep(0.1)
-puts %(   //  __  \\   ||   _  \\  \\\\  \\  /  / *||   _ \\  ||___    ___| ||___    ___ |  ||   __   \\  )  
+puts @pastel.bright_magenta.bold(%(   //  __  \\   ||   _  \\  \\\\  \\  /  / *||   _ \\  ||___    ___| ||___    ___ |  ||   __   \\  )  )
 sleep(0.1)
-puts %(  //  /  \\__\\  ||  |  \\ |  \\\\  \\/  /   ||  | \\ |     ||  | *       ||  |       ||  |  \\   \\ ) 
+puts @pastel.bright_magenta.bold(%(  //  /  \\__\\  ||  |  \\ |  \\\\  \\/  /   ||  | \\ |     ||  | *       ||  |       ||  |  \\   \\ ) )
 sleep(0.1)
-puts %( ||  |   *     ||  |__/ /   \\\\    /    ||  |_/ |     ||  |         ||  |    *  ||  |  |   |)
+puts @pastel.bright_magenta.bold(%( ||  |   *     ||  |__/ /   \\\\    /    ||  |_/ |     ||  |         ||  |    *  ||  |  |   |))
 sleep(0.1)
-puts %( ||  |         ||  __  \\  *  ||  |     ||   __/   *  ||  |         ||  |       ||  |  | * |)
+puts @pastel.bright_magenta.bold(%( ||  |         ||  __  \\  *  ||  |     ||   __/   *  ||  |         ||  |       ||  |  | * |))
 sleep(0.1)
-puts %( ||  |       * ||  | \\  \\    ||  |   * ||  |         ||  |       * ||  |       ||  |  |   |)
+puts @pastel.bright_magenta.bold(%( ||  |       * ||  | \\  \\    ||  |   * ||  |         ||  |       * ||  |       ||  |  |   |))
 sleep(0.1)
-puts %( \\\\  \\     __  ||  |  \\  \\   ||  |     ||  |         ||  |         ||  |       ||  |  |   |)
+puts @pastel.bright_magenta.bold(%( \\\\  \\     __  ||  |  \\  \\   ||  |     ||  |         ||  |         ||  |       ||  |  |   |))
 sleep(0.1)
-puts %(  \\\\  \\__/  /  ||  |   \\  \\  ||  |     ||  |         ||  |   *  ___||  |___    ||  |__/  /) 
+puts @pastel.bright_magenta.bold(%(  \\\\  \\__/  /  ||  |   \\  \\  ||  |     ||  |         ||  |   *  ___||  |___    ||  |__/  /) )
 sleep(0.1)
-puts %(   \\\\ _____/   ||__|  * \\__\\ ||__|     ||__|         ||__|     ||___________|  ||_______/)  
+puts @pastel.bright_magenta.bold(%(   \\\\ _____/   ||__|  * \\__\\ ||__|     ||__|         ||__|     ||___________|  ||_______/)  )
 sleep(0.1)
-puts %(        ___    __    ___     __    ____      __   ___________    ________    _______)
+puts @pastel.bright_magenta.bold(%(        ___    __    ___     __    ____      __   ___________    ________    _______))
 sleep(0.1)
-puts %(       ||  |  |  |  ||  |   |  |  ||    \\ * |  | ||___    ___|  ||       |  ||   _   \\  * ) 
+puts @pastel.bright_magenta.bold(%(       ||  |  |  |  ||  |   |  |  ||    \\ * |  | ||___    ___|  ||       |  ||   _   \\  * ) )
 sleep(0.1)
-puts %(     * ||  |  |  |  ||  |   |  |  ||     \\  |  |     ||  |    * ||   ____|  ||  |  \\  |)
+puts @pastel.bright_magenta.bold(%(     * ||  |  |  |  ||  |   |  |  ||     \\  |  |     ||  |    * ||   ____|  ||  |  \\  |))
 sleep(0.1)
-puts %(       ||  |__|  |  ||  |   |  |  ||      \\ |  |     ||  |      ||  |___    ||  |__/ / ) 
+puts @pastel.bright_magenta.bold(%(       ||  |__|  |  ||  |   |  |  ||      \\ |  |     ||  |      ||  |___    ||  |__/ / ) )
 sleep(0.1)
-puts %(       ||   __   |  ||  | * |  |  ||  |\\    |  | *   ||  |      ||   ___|   ||  ___  \\ )
+puts @pastel.bright_magenta.bold(%(       ||   __   |  ||  | * |  |  ||  |\\    |  | *   ||  |      ||   ___|   ||  ___  \\ ))
 sleep(0.1)
-puts %(       ||  |  |  |  ||  |   |  | *||  | \\      |     ||  |      ||  |   *   ||  |  \\  \\ ) 
+puts @pastel.bright_magenta.bold(%(       ||  |  |  |  ||  |   |  | *||  | \\      |     ||  |      ||  |   *   ||  |  \\  \\ ) )
 sleep(0.1)
-puts %( *     ||  |  |  |  ||  |   |  |  ||  |  \\     |     ||  | *    ||  |____   ||  |   \\  \\ )
+puts @pastel.bright_magenta.bold(%( *     ||  |  |  |  ||  |   |  |  ||  |  \\     |     ||  | *    ||  |____   ||  |   \\  \\ ))
 sleep(0.1)
-puts %(       ||  |  |  |  \\\\  \\__/   /  ||  |   \\    |     ||  |      ||       |  ||  |  * \\  \\ )
+puts @pastel.bright_magenta.bold(%(       ||  |  |  |  \\\\  \\__/   /  ||  |   \\    |     ||  |      ||       |  ||  |  * \\  \\ ))
 sleep(0.1)
-puts %(       ||__|  |__| * \\\\_______/   ||__|    \\___|     ||__|      ||_______|  ||__|     \\__\\ )
+puts @pastel.bright_magenta.bold(%(       ||__|  |__| * \\\\_______/   ||__|    \\___|     ||__|      ||_______|  ||__|     \\__\\ ))
 sleep(0.1)
-puts %(=================================================================================================)
+puts @pastel.bright_cyan(%(=================================================================================================))
 end
 
 def user_login
     prompt = TTY::Prompt.new
-    pastel = Pastel.new
+    @pastel = Pastel.new
     result = prompt.ask("What is your name?") do |q|
         q.required true
         q.validate /\A\w+\Z/
         q.modify   :capitalize
       end
       if User.exists?(['name LIKE ?', "%#{result}%"])
-       puts "Welcome back, #{result}!"
+       puts @pastel.command(@straight.write("Welcome  back, #{result}!"))
        return User.find_by_name(result)
       else
         puts "Hmmm, I don't see that name..."
-        yes_or_no = prompt.yes?("Would you like to create an account?")
+        yes_or_no = ("Would you like to create an account?")
         if yes_or_no == true
             new_user = User.create(name: result)
-            puts "Welcome to Cryptid Hunter " + pastel.red("#{result}!")
+            puts "Welcome to Cryptid Hunter " + @pastel.red("#{result}!")
             new_user.location = prompt.ask("What city do you live in?")
             new_user.bio = prompt.ask("Tell us a little about yourself!")
             new_user.save
@@ -71,14 +77,15 @@ end
 
 def menu
     prompt = TTY::Prompt.new
-    prompt.select("What would you like to do?") do |menu|
+    prompt.select(@pastel.command(@straight.write("What would you like to do?"))) do |menu|
+    menu.per_page 9
     menu.choice 'Write a new post', 1
     menu.choice 'Edit a post', 2
     menu.choice 'Read posts', 3
     menu.choice 'Search for a monster', 4
     menu.choice 'Search for a specific user',5
     menu.choice 'My profile', 6
-    menu.choice 'Exit', 9
+    menu.choice @pastel.red('Exit'), 9
     end
 end
 
@@ -91,22 +98,12 @@ def get_posts(user)
     puts "Title: #{posts.title}"
     puts "Posts: #{posts.content}"
     end
-
-    # prints posts from logged in user
-end
-
-
-
-def edit_post
-    # allows logged in user to edit a post they own
 end
 
 def delete_post(user)
     user_name = User.find_by_name(user)
     posts = user.posts
     posts.destroy
-
-    # allows user to delete a post they own
 end
 
 def get_comments_on_posts(user)
@@ -117,12 +114,4 @@ def get_comments_on_posts(user)
     puts "#{c.name} says: #{c.content}"
     end
   end
-    
-    
-    
-    #prints comments on posts owned by user
-end
-
-def comment
-    # adds a comment to a post
 end
