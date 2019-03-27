@@ -88,8 +88,57 @@ class TicTalkApp
     else
     choices = list.map{|x| x.name}
     selection = @@prompt.select("Select Your Event", choices)
+    display_event(selection)
     end
-    binding.pry
+  end
+
+  def self.by_location
+    entry = @@prompt.ask("Please enter the city you want to search:")
+    list = Event.where('location = ?', entry)
+    if list == []
+      puts "Sorry no events in this location. Choose again."
+      self.by_location
+    else
+    choices = list.map{|x| x.name}
+    selection = @@prompt.select("Select Your Event", choices)
+    display_event(selection)
+    end
+  end
+
+  def self.by_venue
+    entry = @@prompt.ask("Please enter the venue you want to search:")
+    list = Event.where('venue = ?', entry)
+    if list == []
+      puts "Sorry no events in this location. Choose again."
+      self.by_location
+    else
+    choices = list.map{|x| x.name}
+    selection = @@prompt.select("Select Your Event", choices)
+    display_event(selection)
+    end
+  end
+
+  def self.by_genre
+    list = Event.all.map { |x| x.genre  }
+    entry = @@prompt.select("Please select from the following genres:", list.uniq)
+    events = Event.where('genre = ?', entry)
+    choices = events.map{|x| x.name}
+    selection = @@prompt.select("Select Your Event", choices)
+    display_event(selection)
+
+  end
+
+  def self.by_name
+    entry = @@prompt.ask("Please enter the name of the event you want to search for:")
+    list = Event.where('name = ?', entry)
+    if list == []
+      puts "Sorry no events by that name. Choose again."
+      self.by_location
+    else
+    choices = list.map{|x| x.name}
+    selection = @@prompt.select("Select Your Event", choices)
+    display_event(selection)
+    end
   end
 
   def wish_list
@@ -108,4 +157,37 @@ class TicTalkApp
     puts "Thanks for stopping by!"
     self.call
   end
+
+  def self.display_event(selection)
+    display = Event.find_by(name: selection)
+    puts "Selected Event:"
+    puts display.date, display.name
+    puts display.venue, display.location
+    choice = @@prompt.select("What would you like to do?", %w(Add_to_MyWish_List Buy_a_ticket Return_to_Search Return_to_Main_Menu))
+    if choice == "Add_to_MyWish_List"
+      self.add_to_wishlist(display)
+      puts "Great! What would you like to do next?"
+      main_menu
+    elsif
+      choice == "Buy_a_ticket"
+      self.buy_a_ticket(display)
+    elsif
+      choice == "Return_to_Search"
+      self.run_search
+    else
+      choice == "Return_to_Main_Menu"
+      self.main_menu
+      binding.pry
+    end
+  end
+
+  def self.add_to_wishlist(display)
+    x = Ticket.create(user_id: @user.id, event_id: display.id, status: "wish")
+  end
+
+  def self.buy_a_ticket(display)
+    x = Ticket.create(user_id: @user.id, event_id: display.id, status: "bought")
+  end
+
+
 end
