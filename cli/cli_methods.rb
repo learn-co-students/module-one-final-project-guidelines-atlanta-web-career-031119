@@ -97,11 +97,19 @@ end
 def edit_post(user)
     user_name = User.find_by_name(user)
     posts = user.posts
+end 
 
 
 def edit_post
     # allows logged in user to edit a post they own
 end
+
+def list_posts
+    posts = Post.all.each do |po| 
+        posts.title
+    end 
+    binding.pry
+end 
 
 def delete_post(user)
     user_name = User.find_by_name(user)
@@ -117,12 +125,15 @@ def get_comments_on_posts(user)
     c = posts.comments
     c.each do |c|
     puts "#{c.name} says: #{c.content}"
-    
+        end 
+    end 
     
     
     #prints comments on posts owned by user
 end
 
 def comment
+    user = @current_user
+    post = current_post
     # adds a comment to a post
 end
