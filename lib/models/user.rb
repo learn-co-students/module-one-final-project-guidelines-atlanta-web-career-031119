@@ -1,3 +1,4 @@
 class User < ActiveRecord::Base
-  belongs_to :grade 
+  has_many :subjects 
+  belongs_to :grade
 end

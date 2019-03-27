@@ -3,6 +3,11 @@ require 'pry'
 
 class CommandLineInterface
 
+def initialize
+@user = nil
+end
+
+
   def welcome
     font = TTY::Font.new(:standard)
     interpolated = font.write("Conquer College")
@@ -32,12 +37,29 @@ class CommandLineInterface
   def user_login
     puts "Please enter your name"
     name = gets.chomp
-    puts "Select your grade from the following options:\nFreshman   Sophomore   Junior   Senior"
-    grade = gets.chomp
     puts "Please enter your age"
     age = gets.chomp
-    @user = User.find_or_create_by(name: name, age: age, grade_id: Grade.all.sample.id)
-    main_menu
+    puts "Select your grade from the following options:\nFreshman   Sophomore   Junior   Senior"
+    grade = gets.chomp
+    if grade == "Freshman"
+      found_grade_nine = Grade.find_by(grade_level: 9)
+      @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_nine.id)
+      main_menu
+    elsif grade == "Sophomore"
+      found_grade_ten = Grade.find_by(grade_level: 10)
+      @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_ten.id)
+      main_menu
+    elsif grade == "Junior"
+      found_grade_eleven = Grade.find_by(grade_level: 11)
+      @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_eleven.id)
+      main_menu
+    elsif grade == "Senior"
+      found_grade_twelve = Grade.find_by(grade_level: 12)
+      @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_twelve.id)
+      main_menu
+    else
+      puts "please enter your grade"
+    end
   end
 
   def main_menu
@@ -70,19 +92,24 @@ class CommandLineInterface
   end
 
   def all_courses
-    Subject.all.map {|subject| subject.name}
+    courses = Subject.all.map {|subject| subject.name}
+    puts "Here is a comprehensive list of all our courses: #{courses}"
+    main_menu
   end
 
-  # def your_course_menu
-  #   Subject.all.map {|subject| subject.name == self}
-  # end
-  #
-  # def add_course_menu
-  #
-  # end
-  #
-  # def find_reviews
-  # end
+  def your_course_menu
+    my_subjects = @user.grade.subjects
+    puts "Your courses are : #{my_subjects}"
+    main_menu
+  end
+
+  def add_course_menu
+    puts "Please enter the name of the course you want to add"
+    name = gets.chomp
+    Subject.create(name: name, grade_id: @user.grade_id)
+    puts "You have added #{name} to your course list!"
+    main_menu
+  end
 
   def update_materials
     puts "Please enter the name of the supply you would like to update:"
@@ -94,11 +121,20 @@ class CommandLineInterface
   end
 
   def materials_for_grade
-    Material.all
+    puts "Which grade?"
+    grade = gets.chomp.to_i
+    list_of_materials = Grade.all.find{|x| x.grade_level == grade}.subjects.map {|x| x.materials}[0]
+    one_array = list_of_materials.map {|x| x.name}.join(" ")
+    each_item = one_array
+    puts "The Materials for grade #{grade} are: #{one_array}"
+    main_menu
   end
 
-  def all_users_in_x_grade(grade)
-    User.all.select {|user| user.grade_id == grade}
+  def all_users_in_x_grade
+    puts "Which grade?"
+    grade = gets.chomp.to_i
+    users =  Grade.all.find {|x| x.grade_level == grade}.users.map {|x| x.name}.join (" ")
+    puts "The Users for grade #{grade} are: #{users}"
   end
 
 end
