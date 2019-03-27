@@ -2,20 +2,20 @@ User.destroy_all
 Grade.destroy_all
 Subject.destroy_all
 Material.destroy_all
-
-
-10.times do
-User.create(
-  name: Faker::Name.name,
-  age: Faker::Number.between(12, 18),
-  #grade_id: Grade.all.sample.id
-)
-end
+require 'pry'
 
 freshman = Grade.create(grade_level: 9)
 sophomore = Grade.create(grade_level: 10)
 junior = Grade.create(grade_level: 11)
 senior = Grade.create(grade_level: 12)
+
+10.times do
+User.create(
+  name: Faker::Name.name,
+  age: Faker::Number.between(12, 18),
+  grade_id: Grade.all.sample.id
+)
+end
 
 chemistry = Subject.create(name: "Chemistry", grade_id: Grade.all.sample.id)
 american_history = Subject.create(name: "American History", grade_id: Grade.all.sample.id)
