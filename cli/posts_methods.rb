@@ -1,5 +1,3 @@
-
-
 def create_new_post
     prompt = TTY::Prompt.new
     title = prompt.ask("What would you like to call your new post?")

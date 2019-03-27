@@ -66,6 +66,7 @@ PLATFORMS
 
 DEPENDENCIES
   activemodel
+  pastel
   pry
   rake
   require_all

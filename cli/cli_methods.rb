@@ -1,47 +1,48 @@
-
-
 def welcome
-puts "Welcome to......."
+    pastel = Pastel.new
+    prompt = TTY::Prompt.new
+
+puts pastel.red ("Welcome to.......")
 sleep(0.5)
-puts %(=================================================================================================)
+puts pastel.bright_cyan (%(=================================================================================================))
 sleep(0.1)
-puts %(     ______      ______    ___    ___   ______     ___________   ____________    _______    )
+puts pastel.bright_magenta (%(     ______      ______    ___    ___   ______     ___________   ____________    _______    ))
 sleep(0.1)
-puts %(   //  __  \\   ||   _  \\  \\\\  \\  /  / *||   _ \\  ||___    ___| ||___    ___ |  ||   __   \\  )  
+puts pastel.bright_magenta (%(   //  __  \\   ||   _  \\  \\\\  \\  /  / *||   _ \\  ||___    ___| ||___    ___ |  ||   __   \\  ))  
 sleep(0.1)
-puts %(  //  /  \\__\\  ||  |  \\ |  \\\\  \\/  /   ||  | \\ |     ||  | *       ||  |       ||  |  \\   \\ ) 
+puts pastel.bright_magenta (%(  //  /  \\__\\  ||  |  \\ |  \\\\  \\/  /   ||  | \\ |     ||  | *       ||  |       ||  |  \\   \\ ))
 sleep(0.1)
-puts %( ||  |   *     ||  |__/ /   \\\\    /    ||  |_/ |     ||  |         ||  |    *  ||  |  |   |)
+puts pastel.bright_magenta (%( ||  |   *     ||  |__/ /   \\\\    /    ||  |_/ |     ||  |         ||  |    *  ||  |  |   |))
 sleep(0.1)
-puts %( ||  |         ||  __  \\  *  ||  |     ||   __/   *  ||  |         ||  |       ||  |  | * |)
+puts pastel.bright_magenta (%( ||  |         ||  __  \\  *  ||  |     ||   __/   *  ||  |         ||  |       ||  |  | * |))
 sleep(0.1)
-puts %( ||  |       * ||  | \\  \\    ||  |   * ||  |         ||  |       * ||  |       ||  |  |   |)
+puts pastel.bright_magenta (%( ||  |       * ||  | \\  \\    ||  |   * ||  |         ||  |       * ||  |       ||  |  |   |))
 sleep(0.1)
-puts %( \\\\  \\     __  ||  |  \\  \\   ||  |     ||  |         ||  |         ||  |       ||  |  |   |)
+puts pastel.bright_magenta (%( \\\\  \\     __  ||  |  \\  \\   ||  |     ||  |         ||  |         ||  |       ||  |  |   |))
 sleep(0.1)
-puts %(  \\\\  \\__/  /  ||  |   \\  \\  ||  |     ||  |         ||  |   *  ___||  |___    ||  |__/  /) 
+puts pastel.bright_magenta (%(  \\\\  \\__/  /  ||  |   \\  \\  ||  |     ||  |         ||  |   *  ___||  |___    ||  |__/  /)) 
 sleep(0.1)
-puts %(   \\\\ _____/   ||__|  * \\__\\ ||__|     ||__|         ||__|     ||___________|  ||_______/)  
+puts pastel.bright_magenta (%(   \\\\ _____/   ||__|  * \\__\\ ||__|     ||__|         ||__|     ||___________|  ||_______/))  
 sleep(0.1)
-puts %(        ___    __    ___     __    ____      __   ___________    ________    _______)
+puts pastel.bright_magenta (%(        ___    __    ___     __    ____      __   ___________    ________    _______))
 sleep(0.1)
-puts %(       ||  |  |  |  ||  |   |  |  ||    \\ * |  | ||___    ___|  ||       |  ||   _   \\  * ) 
+puts pastel.bright_magenta (%(       ||  |  |  |  ||  |   |  |  ||    \\ * |  | ||___    ___|  ||       |  ||   _   \\  * )) 
 sleep(0.1)
-puts %(     * ||  |  |  |  ||  |   |  |  ||     \\  |  |     ||  |    * ||   ____|  ||  |  \\  |)
+puts pastel.bright_magenta (%(     * ||  |  |  |  ||  |   |  |  ||     \\  |  |     ||  |    * ||   ____|  ||  |  \\  |))
 sleep(0.1)
-puts %(       ||  |__|  |  ||  |   |  |  ||      \\ |  |     ||  |      ||  |___    ||  |__/ / ) 
+puts pastel.bright_magenta (%(       ||  |__|  |  ||  |   |  |  ||      \\ |  |     ||  |      ||  |___    ||  |__/ / )) 
 sleep(0.1)
-puts %(       ||   __   |  ||  | * |  |  ||  |\\    |  | *   ||  |      ||   ___|   ||  ___  \\ )
+puts pastel.bright_magenta (%(       ||   __   |  ||  | * |  |  ||  |\\    |  | *   ||  |      ||   ___|   ||  ___  \\ ))
 sleep(0.1)
-puts %(       ||  |  |  |  ||  |   |  | *||  | \\      |     ||  |      ||  |   *   ||  |  \\  \\ ) 
+puts pastel.bright_magenta (%(       ||  |  |  |  ||  |   |  | *||  | \\      |     ||  |      ||  |   *   ||  |  \\  \\ )) 
 sleep(0.1)
-puts %( *     ||  |  |  |  ||  |   |  |  ||  |  \\     |     ||  | *    ||  |____   ||  |   \\  \\ )
+puts pastel.bright_magenta (%( *     ||  |  |  |  ||  |   |  |  ||  |  \\     |     ||  | *    ||  |____   ||  |   \\  \\ ))
 sleep(0.1)
-puts %(       ||  |  |  |  \\\\  \\__/   /  ||  |   \\    |     ||  |      ||       |  ||  |  * \\  \\ )
+puts pastel.bright_magenta (%(       ||  |  |  |  \\\\  \\__/   /  ||  |   \\    |     ||  |      ||       |  ||  |  * \\  \\ ))
 sleep(0.1)
-puts %(       ||__|  |__| * \\\\_______/   ||__|    \\___|     ||__|      ||_______|  ||__|     \\__\\ )
+puts pastel.bright_magenta (%(       ||__|  |__| * \\\\_______/   ||__|    \\___|     ||__|      ||_______|  ||__|     \\__\\ ))
 sleep(0.1)
-puts %(=================================================================================================)
+puts pastel.bright_cyan (%(=================================================================================================))
 end
 
 def user_login
@@ -70,15 +71,16 @@ def user_login
 end
 
 def menu
+    pastel = Pastel.new
     prompt = TTY::Prompt.new
     prompt.select("What would you like to do?") do |menu|
-    menu.choice 'Write a new post', 1
-    menu.choice 'Edit a post', 2
-    menu.choice 'Read posts', 3
-    menu.choice 'Search for a monster', 4
-    menu.choice 'Search for a specific user',5
-    menu.choice 'My profile', 6
-    menu.choice 'Exit', 9
+    menu.choice pastel.red('Write a new post'), 1
+    menu.choice pastel.bright_cyan('Edit a post'), 2
+    menu.choice pastel.bright_magenta('Read posts'), 3
+    menu.choice pastel.bright_green('Search for a monster'), 4
+    menu.choice pastel.bright_yellow('Search for a specific user'), 5
+    menu.choice pastel.bright_red('My profile'), 6
+    menu.choice pastel.green('Exit'), 9
     end
 end
 
@@ -88,18 +90,12 @@ def get_posts(user)
     user_name = User.find_by_name(user)
     posts = user.posts
     post.each do |post|
-    puts "Title: #{posts.title}"
+    puts pastel.bright_green("Title: #{posts.title}")
     puts "Posts: #{posts.content}"
     end
 
     # prints posts from logged in user
 end
-
-def edit_post(user)
-    user_name = User.find_by_name(user)
-    posts = user.posts
-end 
-
 
 def edit_post
     # allows logged in user to edit a post they own
@@ -112,11 +108,12 @@ def list_posts
     binding.pry
 end 
 
-def delete_post(user)
-    user_name = User.find_by_name(user)
-    posts = user.posts
-    posts.destroy
-
+def delete_post(post_to_edit)
+    prompt = TTY::Prompt.new()
+    answer = prompt.yes?("Are you sure you want to delete this post")
+    if answer == true
+        post_to_edit.destroy
+    end
     # allows user to delete a post they own
 end
 
@@ -136,5 +133,6 @@ end
 def comment
     user = @current_user
     post = current_post
+    Comment.create(user_id: user.id, post_id: post.id, content: input)
     # adds a comment to a post
 end
