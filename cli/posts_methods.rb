@@ -1,11 +1,42 @@
+
+@pastel = Pastel.new
+@straight = TTY::Font.new(:straight)
+@blocks = TTY::Font.new(:standard)
+@doom = TTY::Font.new(:doom)
+
+@pastel.alias_color(:border, :green)
+@pastel.alias_color(:title, :bright_red, :bold)
+@pastel.alias_color(:command, :red, :bold)
+
 def create_new_post
     prompt = TTY::Prompt.new
-    title = prompt.ask("What would you like to call your new post?")
-    content = prompt.ask("What would you like your new post to say?")
+    title = prompt.ask(@pastel.command("What would you like to call your new post?")) do |q|
+            q.required true
+            end
+    content = prompt.ask(@pastel.command("What would you like your new post to say?")) do |q|
+              q.required true
+            end
     monster_name = select_monster
     monster = Monster.find_by_name(monster_name)
     Post.create(user_id: @current_user.id, title: title, content: content, monster_id: monster.id)
 end
+
+def delete_or_edit
+    list = TTY::Prompt.new
+    list.select(@pastel.command(@straight.write("Would you like to edit or delete this post?"))) do |menu|
+        menu.choice "Edit post", 1
+        menu.choice "Delete post", 2
+    end
+end
+
+def delete_post(post_to_edit)
+    prompt = TTY::Prompt.new()
+    answer = prompt.yes?(@pastel.command(@straight.write("Are you sure you want to delete this post")))
+    if answer == true
+        post_to_edit.destroy
+    end
+    # allows user to delete a post they own
+ end
 
 def edit_post_selection(user)
     choices = []
@@ -14,7 +45,7 @@ def edit_post_selection(user)
     posts.each do |post|
         choices << post.title
     end
-    list.select("Which post would you like to edit?", choices)
+    list.select(@pastel.command(@straight.write("Which post would you like to edit?")), choices)
 end
 
 def edit_post(post_to_edit)
@@ -24,19 +55,9 @@ def edit_post(post_to_edit)
    post_to_edit.update(content: to_edit)
 end
 
-def select_monster
-    choices = []
-    monsters = get_all_monsters_names
-    monsters.each do |mon|
-        choices<< mon
-    end
-    prompt = TTY::Prompt.new
-    prompt.select("Which cryptid would you like to tag for your post?", choices)
-end
-
 def post_menu
     posts_menu = TTY::Prompt.new
-    posts_menu.select("Okay! How would you like to search posts?") do |menu|
+    posts_menu.select(@pastel.command(@straight.write("How would you like to search posts?"))) do |menu|
         menu.choice "By User", 1
         menu.choice "By Monster", 2
         menu.choice "Most Recent", 3
@@ -64,16 +85,17 @@ def print_posts_by_user(selection)
     posts = get_posts_by_user(selection)
     user = User.find_by_name(selection)
     if posts == []
-        puts "Oops! It looks like #{user.name} hasn't posted anything yet!"
+        puts @pastel.command(@straight.write("Oops! It looks like #{user.name} hasn't posted anything yet!"))
     else
     posts.each do |post|
-    puts " * " * 20
-    puts "Title: #{post.title}"
+    puts @pastel.border(" * ") * 20
+    puts "Title"
+    puts @pastel.title("#{post.title}")
     puts " "
-    puts "Posts: #{post.content}"
-    puts "-"*50
+    puts "#{post.content}"
+    puts @pastel.border("-")*50
     get_comments_for_post(post)
-    comment = prompt.yes?('Would you like to leave a comment?')
+    comment = prompt.yes?(@pastel.command('Would you like to leave a comment?'))
         if comment == true
             comment_on_post(post)
             end
@@ -85,37 +107,43 @@ def print_posts_by_user(selection)
     monster = Monster.find_by_name(selection)
     posts = monster.posts
     posts.each do |post|
-        puts " * " * 20
-        puts "Title: #{post.title}"
+        puts @pastel.border(" * ") * 20
+        puts @pastel.title("Title: ")
+        puts "#{post.title}"
         puts " "
-        puts "Posts: #{post.content}"
-        puts "-"*50
+        puts "#{post.content}"
+        puts @pastel.border("-") * 50
     end
 end
 
 def get_post_by_title(title)
     post = Post.find_by_title(title)
-    puts " * " * 20
-    puts "Title: #{post.title}"
+    puts @pastel.border(" * ") * 20
+    puts @pastel.title("Title: ")
+    puts "#{post.title}"
     puts " "
-    puts "Posts: #{post.content}"
-    puts "-"*50
+    puts "#{post.content}"
+    puts @pastel.border("-") * 50
 end
 
 
 
 def get_most_recent_posts
     posts = Post.all.order('created_at DESC')
-end
-
-def list_posts
     choices = []
     list = TTY::Prompt.new
-    posts = get_most_recent_posts
     posts.each do |post|
         choices << post.title
     end
-    list.select("Which post would you like to read?", choices)
+    list.select(@pastel.command(@straight.write("Which post would you like to read?")), choices)
 end
 
-
+def list_posts(user)
+    choices = []
+    list = TTY::Prompt.new
+    posts = user.posts
+    posts.each do |post|
+        choices << post.title
+    end
+    list.select(@pastel.command(@straight.write("Which post would you like to delete?")), choices)
+end

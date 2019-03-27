@@ -1,3 +1,6 @@
+@pastel = Pastel.new
+@blocks = TTY::Font.new(:standard)
+
 def get_users_names
     User.pluck(:name)
 end
@@ -14,19 +17,19 @@ end
 
 def get_user_profile(user)
     monsters = user.monsters
-    puts "Name: #{user.name}"
+    puts @pastel.bold(@blocks.write("#{user.name}"))
     puts "Location: #{user.location}"
     puts "#{user.bio}"
-    puts "Monsters encountered: #{monsters.pluck(:name).uniq.join(', ')}."
+    puts "Monsters encountered: " + @pastel.red.bold("#{monsters.pluck(:name).uniq.join(', ')}.")
 end
 
 def get_user_by_name(selection)
     user = User.find_by_name(selection)
     monsters = user.monsters
-    puts "Name: #{user.name}"
+    puts @pastel.bold(@blocks.write("#{user.name}"))
     puts "Location: #{user.location}"
     puts "#{user.bio}"
-    puts "Monsters encountered: #{monsters.pluck(:name).uniq.join(', ')}."
+    puts "Monsters encountered: " + @pastel.red.bold("#{monsters.pluck(:name).uniq.join(', ')}.")
 end
 
 
@@ -68,6 +71,7 @@ def update_profile_menu
     update_menu.select("Okay! What woud you like to change?") do |menu|
         menu.choice "Edit Location", 1
         menu.choice "Edit Bio", 2
+        menu.choice "Nevermind", 3
     end
 end
 

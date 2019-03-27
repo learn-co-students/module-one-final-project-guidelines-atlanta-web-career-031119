@@ -17,7 +17,12 @@ menu_choice = menu
     if menu_choice == 2
         selection = edit_post_selection(@current_user)
         post_to_edit = Post.find_by_title(selection)
-        edit_post(post_to_edit)
+        answer = delete_or_edit
+        if answer == 1
+            edit_post(post_to_edit)
+        elsif answer == 2
+            delete_post(post_to_edit)
+        end
     end
 
     #------------READ POSTS MENU-------------#
@@ -30,12 +35,11 @@ if menu_choice == 3
     
     if option == 2
         answer = search_monsters_by_name 
-        get_posts_about_monster(selection)
+        get_posts_about_monster(answer)
     end
 
     if option == 3
-        get_most_recent_posts
-        title = list_posts
+        title = get_most_recent_posts
         get_post_by_title(title)
     end
 end
@@ -67,6 +71,8 @@ if menu_choice == 6
             get_user_profile(@current_user)
           elsif selection == 2
             print_posts_current_user(@current_user)
+          elsif selection == 3
+            comments_for_user(@current_user)
           end
         end 
         #edit profile
@@ -76,6 +82,7 @@ if menu_choice == 6
             update_location    
         elsif option == 2
             update_bio
+        elsif option == 3
         end
     end
 end
