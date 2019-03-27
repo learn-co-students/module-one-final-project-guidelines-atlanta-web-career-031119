@@ -36,17 +36,18 @@ class TicTalkApp
   end
 
   def self.main_menu
-    choice = @@prompt.select("Main Menu", %w(Search My_Wish_List My_Upcoming_Events My_Past_Events Dashboard Logout))
+    options = ["Search","My Wish List","My Upcoming Events","My Past Events","Dashboard","Logout"]
+    choice = @@prompt.select("Main Menu", options)
     if choice == "Search"
       self.run_search
     elsif
-      choice == "My_Wish_List"
-      wish_list
+      choice == "My Wish List"
+      self.wish_list
     elsif
-      choice == "My_Upcoming_Events"
+      choice == "My Upcoming Events"
       upcoming_events
     elsif
-      choice == "My_Past_Event"
+      choice == "My Past Events"
       past_events
     elsif
       choice == "Dashboard"
@@ -58,23 +59,24 @@ class TicTalkApp
   end
 
   def self.run_search
-    choice = @@prompt.select("Search Menu", %w( By_Date By_Location By_Genre By_Venue By_Name Return_to_Main_Menu))
-    if choice == "By_Date"
+    options = ["By Date","By Location","By Genre","By Venue","By Name","Return to Main Menu"]
+    choice = @@prompt.select("Search Menu", options)
+    if choice == "By Date"
       self.by_date
     elsif
-      choice == "By_Location"
+      choice == "By Location"
       self.by_location
     elsif
-      choice == "By_Genre"
+      choice == "By Genre"
       self.by_genre
     elsif
-      choice == "By_Venue"
+      choice == "By Venue"
       self.by_venue
     elsif
-      choice == "By_Name"
+      choice == "By Name"
       self.by_name
     elsif
-      choice == "Return_to_Main_Menu"
+      choice == "Return to Main Menu"
       self.main_menu
     end
   end
@@ -141,9 +143,10 @@ class TicTalkApp
     end
   end
 
-  def wish_list
-    Event.where()
-    selection = @@prompt.select("Which one would you like to buy?", x)
+  def self.wish_list
+    wish_tickets = Ticket.where('status = ? AND user_id = ?', 'wish', @user.id)
+    my_wish_list = wish_tickets.map {|ticket| Event.find(ticket.event_id).name }
+    selection = @@prompt.select("Which one would you like to buy?", my_wish_list)
   end
 
   def upcoming_events
@@ -165,23 +168,23 @@ class TicTalkApp
     puts "Selected Event:"
     puts display.date, display.name
     puts display.venue, display.location
-    choice = @@prompt.select("What would you like to do?", %w(Add_to_MyWish_List Buy_a_ticket Return_to_Search Return_to_Main_Menu))
-    if choice == "Add_to_MyWish_List"
+    options = ["Add to MyWish List","Buy a ticket","Return to Search","Return to Main Menu"]
+    choice = @@prompt.select("What would you like to do?", options)
+    if choice == "Add to MyWish List"
       self.add_to_wishlist(display)
       puts "Great! What would you like to do next?"
       main_menu
     elsif
-      choice == "Buy_a_ticket"
+      choice == "Buy a ticket"
       self.buy_a_ticket(display)
       puts "Great! What would you like to do next?"
       main_menu
     elsif
-      choice == "Return_to_Search"
+      choice == "Return to Search"
       self.run_search
     else
-      choice == "Return_to_Main_Menu"
+      choice == "Return to Main Menu"
       self.main_menu
-      binding.pry
     end
   end
 
