@@ -145,8 +145,14 @@ class TicTalkApp
 
   def self.wish_list
     wish_tickets = Ticket.where('status = ? AND user_id = ?', 'wish', @user.id)
-    my_wish_list = wish_tickets.map {|ticket| Event.find(ticket.event_id).name }
+    my_wish_list = wish_tickets.map do |ticket|
+      x = {}
+      x[:name] = Event.find(ticket.event_id).name
+      x[:value] = Event.find(ticket.event_id).id
+      x
+    end
     selection = @@prompt.select("Which one would you like to buy?", my_wish_list)
+    self.update_ticket_status(selection)
   end
 
   def self.bought_list
@@ -208,6 +214,16 @@ class TicTalkApp
   def self.buy_a_ticket(display)
     x = Ticket.create(user_id: @user.id, event_id: display.id, status: "bought")
   end
+
+  def self.update_ticket_status(selection)
+    wish_tickets = Ticket.where('status = ? AND user_id = ?', 'wish', @user.id)
+    ticket_to_update = wish_tickets.find{|x| x.name == selection}
+    Ticket.update(ticket_to_update.id, :status => "bought")
+  end
+
+  #def self.find_or_create_ticket(display, selection)
+  #  if Ticket.where('user_id = ? AND event_id = ? AND status = ?', @user.id, display.id, "wish")
+
 
 
 end
