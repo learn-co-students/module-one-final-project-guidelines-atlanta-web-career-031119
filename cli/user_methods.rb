@@ -1,6 +1,8 @@
 @pastel = Pastel.new
 @blocks = TTY::Font.new(:standard)
 
+include List
+
 def get_users_names
     User.pluck(:name)
 end
@@ -16,35 +18,19 @@ def search_users_by_name
 end
 
 def get_user_profile(user)
-    monsters = user.monsters
-    puts @pastel.bold(@blocks.write("#{user.name}"))
-    puts "Location: #{user.location}"
-    puts "#{user.bio}"
-    puts "Monsters encountered: " + @pastel.red.bold("#{monsters.pluck(:name).uniq.join(', ')}.")
+    print_profile(user)
 end
 
 def get_user_by_name(selection)
     user = User.find_by_name(selection)
-    monsters = user.monsters
-    puts @pastel.bold(@blocks.write("#{user.name}"))
-    puts "Location: #{user.location}"
-    puts "#{user.bio}"
-    puts "Monsters encountered: " + @pastel.red.bold("#{monsters.pluck(:name).uniq.join(', ')}.")
+   print_profile(user)
 end
 
 
 def user_monsters(user)
 monsters = user.monsters 
 monsters.each do |mon|
-    puts " * " * 25
-    puts " "
-    puts "Name: #{mon.name}"
-    puts " "
-    puts "Location: #{mon.location}"
-    puts " "
-    puts "Description: #{mon.description}"
-    puts "_" * 40
-    puts "Total posts about #{mon.name}s " 
+print_monsters(mon)
     end
 end
 
@@ -78,7 +64,7 @@ end
 def update_location
     user = @current_user
     prompt = TTY::Prompt.new
-    new_location= prompt.ask("What is your new location?")
+    new_location = prompt.ask("What is your new location?")
     user.update(location: new_location)
     puts "Okay! We'll change your location to #{new_location}"
     sleep(1)

@@ -64,7 +64,7 @@ end
     #------------MY PROFILE MENU-------------#
 if menu_choice == 6
     answer = profile_menu
-        #view profile
+        #view profile ADD USER MONSTERS OPTION
         if answer == 1
           selection = view_profile_menu
           if selection == 1

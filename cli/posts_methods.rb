@@ -8,6 +8,8 @@
 @pastel.alias_color(:title, :bright_red, :bold)
 @pastel.alias_color(:command, :red, :bold)
 
+include List
+
 def create_new_post
     prompt = TTY::Prompt.new
     title = prompt.ask(@pastel.command("What would you like to call your new post?")) do |q|
@@ -35,7 +37,6 @@ def delete_post(post_to_edit)
     if answer == true
         post_to_edit.destroy
     end
-    # allows user to delete a post they own
  end
 
 def edit_post_selection(user)
@@ -71,11 +72,7 @@ end
 
 def print_posts_current_user(user)
     user.posts.each do |post|
-        puts " * " * 20
-        puts "Title: #{post.title}"
-        puts " "
-        puts "Posts: #{post.content}"
-        puts "-"*50
+        print_posts(post)
         get_comments_for_post(post)
     end
 end
@@ -88,12 +85,7 @@ def print_posts_by_user(selection)
         puts @pastel.command(@straight.write("Oops! It looks like #{user.name} hasn't posted anything yet!"))
     else
     posts.each do |post|
-    puts @pastel.border(" * ") * 20
-    puts "Title"
-    puts @pastel.title("#{post.title}")
-    puts " "
-    puts "#{post.content}"
-    puts @pastel.border("-")*50
+    print_posts(post)
     get_comments_for_post(post)
     comment = prompt.yes?(@pastel.command('Would you like to leave a comment?'))
         if comment == true
@@ -107,23 +99,15 @@ def print_posts_by_user(selection)
     monster = Monster.find_by_name(selection)
     posts = monster.posts
     posts.each do |post|
-        puts @pastel.border(" * ") * 20
-        puts @pastel.title("Title: ")
-        puts "#{post.title}"
-        puts " "
-        puts "#{post.content}"
-        puts @pastel.border("-") * 50
+        print_posts(post)
+        comment_on_post(post)
     end
 end
 
 def get_post_by_title(title)
     post = Post.find_by_title(title)
-    puts @pastel.border(" * ") * 20
-    puts @pastel.title("Title: ")
-    puts "#{post.title}"
-    puts " "
-    puts "#{post.content}"
-    puts @pastel.border("-") * 50
+    print_posts(post)
+    comment_on_post(post)
 end
 
 

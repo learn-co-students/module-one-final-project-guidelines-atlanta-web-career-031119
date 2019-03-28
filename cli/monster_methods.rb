@@ -3,6 +3,9 @@
 @pastel = Pastel.new
 @pastel.alias_color(:command, :red, :bold)
 @prompt = TTY::Prompt.new
+
+include List
+
 def get_all_monsters_names
     Monster.pluck(:name) 
 end
@@ -18,14 +21,7 @@ end
 
 def get_monster_by_name(selection)
     monster = Monster.find_by_name(selection)
-    puts " "
-    puts @pastel.red.bold(@doom.write("#{monster.name.upcase}"))
-    puts " "
-    puts "Location: #{monster.location}"
-    puts " "
-    puts "Description: #{monster.description}"
-    puts "_" * 40
-    puts "Total posts about #{monster.name}s: " + @pastel.cyan("#{monster.posts.length}")
+    print_monsters(monster)
     return selection
     end
 
