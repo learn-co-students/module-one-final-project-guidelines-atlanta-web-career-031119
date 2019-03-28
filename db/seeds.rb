@@ -3,20 +3,20 @@ Monster.destroy_all
 Post.destroy_all
 Comment.destroy_all
 
-maddie = User.create(name: "Maddie", location: "Atlanta, GA USA")
-sam = User.create(name: "Sam", location: "Atlanta, GA USA")
-padfoot = User.create(name: "Padfoot", location: "London, England")
-sarah = User.create(name: "Sarah", location: "Sydney, Australia")
-kevin = User.create(name: "Kevin", location: "Brookyln, NY USA")
-taylor = User.create(name: "Taylor", location: "Wellington, NZ")
+maddie = User.create(name: "Maddie", location: "Atlanta, GA USA", rank: 0)
+sam = User.create(name: "Sam", location: "Atlanta, GA USA", rank: 0)
+padfoot = User.create(name: "Padfoot", location: "London, England", rank: 0)
+sarah = User.create(name: "Sarah", location: "Sydney, Australia", rank: 0)
+kevin = User.create(name: "Kevin", location: "Brookyln, NY USA", rank: 0)
+taylor = User.create(name: "Taylor", location: "Wellington, NZ", rank: 0)
 
-vampire = Monster.create(name: "Vampire", description: "Bloodsucking humanoids. Can only be killed by a stake to the heart. Avoids sunlight", location: "Global")
+vampire = Monster.create(name: "Vampire", danger_rating: 6, description: "Bloodsucking humanoids. Can only be killed by a stake to the heart. Avoids sunlight", location: "Global")
 
-sasquatch = Monster.create(name:"Sasquatch", description: "Large and hairy ape-like creature", location: "Canada and the USA")
+sasquatch = Monster.create(name:"Sasquatch", danger_rating: 4, description: "Large and hairy ape-like creature", location: "Canada and the USA")
 
-leviathan = Monster.create(name: "Leviathan", description: "any large, unidentifiable, aquatic cryptid", location: "Unknown")
+leviathan = Monster.create(name: "Leviathan", danger_rating: 7, description: "any large, unidentifiable, aquatic cryptid", location: "Unknown")
 
-chupacabra = Monster.create(name: "Chupacabra", description: "dog-sized mammalian cryptids with large eyes and bigger appetitites. Known to suck the blood of goats", location: "Central America")
+chupacabra = Monster.create(name: "Chupacabra", danger_rating: 2,description: "dog-sized mammalian cryptids with large eyes and bigger appetitites. Known to suck the blood of goats", location: "Central America")
 
 vamp_sighting = Post.create(user_id: maddie.id, monster_id: vampire.id, title: "Bloodsucker on the beltline!", content: "Last night my wife and I were walking on the beltline just after dusk. We saw a strange humanoid figure emerge from the shadows. As our instincts told us to speed up, it matched our pace. We only got away by running into an italian restaurant. tl;dr BOLO for vampire in Virginia highlands!")
 

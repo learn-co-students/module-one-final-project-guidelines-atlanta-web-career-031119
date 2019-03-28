@@ -21,6 +21,7 @@ def create_new_post
     monster_name = select_monster
     monster = Monster.find_by_name(monster_name)
     Post.create(user_id: @current_user.id, title: title, content: content, monster_id: monster.id)
+    user_rank(@current_user)
 end
 
 def delete_or_edit
