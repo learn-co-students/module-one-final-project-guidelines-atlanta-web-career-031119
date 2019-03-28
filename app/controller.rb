@@ -88,7 +88,13 @@ class TicTalkApp
       puts "Sorry no events on this day. Choose again."
       self.by_date
     else
-    choices = list.map{|x| x.name}
+    #choices = list.map{|x| x.name}
+    choices = list.map do |event|
+     x = {}
+     x[:name] = event.name
+     x[:value] = event.id
+     x
+   end
     selection = @@prompt.select("Select Your Event", choices)
     display = display_event(selection)
     ticket_options(display)
@@ -102,7 +108,13 @@ class TicTalkApp
       puts "Sorry no events in this location. Choose again."
       self.by_location
     else
-    choices = list.map{|x| x.name}
+    #choices = list.map{|x| x.name}
+    choices = list.map do |event|
+     x = {}
+     x[:name] = event.name
+     x[:value] = event.id
+     x
+   end
     selection = @@prompt.select("Select Your Event", choices)
     display = display_event(selection)
     ticket_options(display)
@@ -113,7 +125,13 @@ class TicTalkApp
     list = Event.all.map { |x| x.venue  }
     entry = @@prompt.select("Please select from the following venues:", list.uniq)
     events = Event.where('venue = ?', entry)
-    choices = events.map{|x| x.name}
+    #choices = events.map{|x| x.name}
+    choices = events.map do |event|
+     x = {}
+     x[:name] = event.name
+     x[:value] = event.id
+     x
+   end
     selection = @@prompt.select("Select Your Event", choices)
     display = display_event(selection)
     ticket_options(display)
@@ -123,7 +141,13 @@ class TicTalkApp
     list = Event.all.map { |x| x.genre  }
     entry = @@prompt.select("Please select from the following genres:", list.uniq)
     events = Event.where('genre = ?', entry)
-    choices = events.map{|x| x.name}
+    #choices = events.map{|x| x.name}
+    choices = events.map do |event|
+     x = {}
+     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
+     x[:value] = event.id
+     x
+   end
     selection = @@prompt.select("Select Your Event", choices)
     display = display_event(selection)
     ticket_options(display)
@@ -133,7 +157,14 @@ class TicTalkApp
     list = Event.all.map { |x| x.name  }
     entry = @@prompt.select("Please select from the following events:", list.uniq)
     events = Event.where('name = ?', entry)
-    choices = events.map{|x| x.name}
+
+    #choices = events.map{|x| x.name}
+    choices = events.map do |event|
+     x = {}
+     x[:name] = event.name
+     x[:value] = event.id
+     x
+   end
     selection = @@prompt.select("Select Your Event", choices)
     display = display_event(selection)
     ticket_options(display)
@@ -141,7 +172,7 @@ class TicTalkApp
 
   def self.wish_list
     wish_tickets = Ticket.where('status = ? AND user_id = ?', 'wish', @user.id)
-    if wish_tickets == nil
+    if wish_tickets == []
       puts "You haven't chosen anything yet!?!"
       main_menu
     else
@@ -175,9 +206,12 @@ class TicTalkApp
    end
     selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
     display_event(selection)
-    selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "View Other Upcoming Events", "Return to Main Menu"])
+    selection2 = @@prompt.select("Next?", ["Leave some TicTalk","Read some TicTalk", "View Other Upcoming Events", "Return to Main Menu"])
     if selection2 == "Leave some TicTalk"
       add_comment(selection)
+    elsif
+      selection2 == "Read some TicTalk"
+      view_comments(Event.find(selection))
     elsif
       selection2 =="View Other Upcoming Events"
       upcoming_events
@@ -198,9 +232,12 @@ class TicTalkApp
    end
     selection = @@prompt.select("Here are your Past events", my_past_list)
     display_event(selection)
-    selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "View Other Past Events", "Return to Main Menu"])
+    selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "Read some TicTalk" "View Other Past Events", "Return to Main Menu"])
     if selection2 == "Leave some TicTalk"
       add_comment(selection)
+    elsif
+      selection2 == "Read some TicTalk"
+      view_comments(Event.find(selection))
     elsif selection2 == "View Other Past Events"
       past_events
     else
@@ -226,9 +263,13 @@ class TicTalkApp
   end
 
   def self.ticket_options(display)
-    options = ["Add to MyWish List","Buy a ticket","Return to Search","Return to Main Menu"]
+    options = ["Read the TicTalk", "Add to MyWish List","Buy a ticket","Return to Search","Return to Main Menu"]
     choice = @@prompt.select("What would you like to do?", options)
-    if choice == "Add to MyWish List"
+    if choice == "Read the TicTalk"
+      self.view_comments(display)
+      puts "Great! What would you like to do next?"
+      ticket_options(display)
+    elsif choice == "Add to MyWish List"
       self.add_to_wishlist(display)
       puts "Great! What would you like to do next?"
       main_menu
@@ -289,17 +330,35 @@ class TicTalkApp
   end
 
   def self.add_comment(selection)
-
     comment = @@prompt.multiline("Enter your comments here:")
-     ask = @@prompt.yes?('Would you recomment this event?', convert: :bool)
-    # recommend = if ask == Yes
-    #   1
-    # else
-    #   0
-    # end
-    x = Review.create(user_id: @user.id, event_id: selection,content: comment, recommend: ask)
+    ask = @@prompt.yes?('Would you recomment this event?', convert: :bool)
+    x = Review.create(user_id: @user.id, event_id: selection,content: comment.join, recommend: ask)
     puts "Thanks for your TicTalk!"
     main_menu
+  end
+
+  def self.view_comments(event)
+    comment_list = Review.where('event_id =?', event.id)
+
+    if comment_list == []
+      puts "No TicTalk for this event yet."
+      ticket_options(event)
+    else
+      list = comment_list.map do |comment|
+      n = User.find(comment.user_id)
+        rcm = if comment.recommend == true
+          "Yes"
+        else
+          "No"
+        end
+      x = {}
+      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
+      x[:value] = comment.event_id
+      x
+    end
+   end
+    selection = @@prompt.select("Select a comment to return to event details:", list)
+    ticket_options(event)
   end
 
   #def self.find_or_create_ticket(display, selection)
