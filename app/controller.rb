@@ -38,7 +38,7 @@ class TicTalkApp
   end
 
   def self.main_menu
-    options = ["Search","My Wish List","My Upcoming Events","My Past Events","Dashboard","Logout"]
+    options = ["Search","My Wish List","My Upcoming Events","My Past Events", "Logout"]
     choice = @@prompt.select("Main Menu", options)
     if choice == "Search"
       self.run_search
@@ -93,7 +93,7 @@ class TicTalkApp
     #choices = list.map{|x| x.name}
     choices = list.map do |event|
      x = {}
-     x[:name] = event.name
+     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
      x
    end
@@ -113,7 +113,7 @@ class TicTalkApp
     #choices = list.map{|x| x.name}
     choices = list.map do |event|
      x = {}
-     x[:name] = event.name
+     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
      x
    end
@@ -130,7 +130,7 @@ class TicTalkApp
     #choices = events.map{|x| x.name}
     choices = events.map do |event|
      x = {}
-     x[:name] = event.name
+     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
      x
    end
@@ -163,7 +163,7 @@ class TicTalkApp
     #choices = events.map{|x| x.name}
     choices = events.map do |event|
      x = {}
-     x[:name] = event.name
+     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
      x
    end
@@ -210,7 +210,7 @@ class TicTalkApp
     display = display_event(selection)
     ticket_options_upcoming(display)
   end
-  
+
   def self.ticket_options_upcoming(display)
     selection2 = @@prompt.select("Next?", ["Leave some TicTalk","Read some TicTalk", "View Other Upcoming Events", "Return to Main Menu"])
     if selection2 == "Leave some TicTalk"
@@ -231,19 +231,24 @@ class TicTalkApp
   def self.past_events
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
     my_past_events = my_bought_events.select {|event| event.date < DateTime.now.to_s[0..9] }
-    #my_past_list = my_past_events.map {|event| event.name }
-    my_past_list = my_past_events.map do |event|
+    if my_past_events == []
+      system "clear"
+      puts "You don\'t have any past events yet."
+      main_menu
+    else
+     my_past_list = my_past_events.map do |event|
      x = {}
      x[:name] = event.name
      x[:value] = event.id
      x
+    end
    end
     selection = @@prompt.select("Here are your Past events", my_past_list)
     display = display_event(selection)
     ticket_options_past(display)
   end
 
-  def self.ticket_options_past(display)  
+  def self.ticket_options_past(display)
     selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "Read some TicTalk", "View Other Past Events", "Return to Main Menu"])
     if selection2 == "Leave some TicTalk"
       add_comment(display.id)
