@@ -167,10 +167,10 @@ class TicTalkApp
 
     my_upcoming_events = my_bought_events.select {|event| event.date > DateTime.now.to_s[0..9] }
     #my_upcoming_list = my_upcoming_events.map {|event| event.name }
-    my_upcoming_list = my_upcoming_events.map do |ticket|
+    my_upcoming_list = my_upcoming_events.map do |event|
      x = {}
-     x[:name] = Event.find(ticket.id).name
-     x[:value] = ticket.id
+     x[:name] = event.name
+     x[:value] = event.id
      x
    end
     selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
@@ -209,7 +209,8 @@ class TicTalkApp
   end
 
   def self.display_event(selection)
-    display = Event.find_by(name: selection)
+
+    display = Event.find(selection)
     puts "Selected Event:"
     puts display.date, display.name
     puts display.venue, display.location
@@ -280,8 +281,17 @@ class TicTalkApp
   end
 
   def self.add_comment(selection)
-    binding.pry
-    x = Review.create(user_id: @user.id, event_id: selection.id, recommend: nil)
+
+    comment = @@prompt.multiline("Enter your comments here:")
+    # ask = @@prompt.yes?('Would you recomment this event?')
+    # recommend = if ask == Yes
+    #   1
+    # else
+    #   0
+    # end
+    x = Review.create(user_id: @user.id, event_id: selection,content: comment, recommend: nil)
+    puts "Thanks for your TicTalk!"
+    main_menu
   end
 
   #def self.find_or_create_ticket(display, selection)
