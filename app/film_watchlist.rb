@@ -164,10 +164,11 @@ end
 def user_menu(current_user)
     menu_banner(current_user.name)
     menu = "user"
-    puts " 1) View Movie list"
+    puts " 1) View your movie list"
     puts " 2) Search for movies"
-    puts " 3) Change user name"
-    puts " 4) Switch user"
+    puts " 3) View movie statistics"
+    puts " 4) Change user name"
+    puts " 5) Switch user"
     puts " 0) Delete profile (Warning!!!)"
     go_back_menu
     puts
@@ -178,12 +179,15 @@ def user_menu(current_user)
         view_watchlist(current_user)
     elsif response == '2'
         movie_search(current_user)
-    elsif response == '4'
+    elsif response == '5'
         logging_in_user
     elsif response == '0'
         delete_profile(current_user)
-    elsif response == '3'
+    elsif response == '4'
         change_user_name(current_user)
+    elsif response == '3'
+        view_movie_statistics(current_user)
+        # MovieWatchlist.group("movie_id").sort.first.movie.title
     else
         user_menu(current_user)
     end
@@ -254,14 +258,18 @@ def movie_search(current_user)
     puts " 3) Database search (returns movies that all users have saved)"
     go_back_user_menu
     print " => "
-    response = gets.chomp
+    response = gets.chomp.downcase
     check_responses(response, "user")
-    if response == '1'
+    if response == 'user_menu' or response == 'user' or response == 'u'
+        user_menu(current_user)
+    elsif response == '1'
         lucky_search(current_user)
     elsif response == '2'
         broad_search(current_user)
     elsif response == '3'
         database_search(current_user)
+    elsif response == 'user_menu'
+        user_menu(current_user)
     else
         movie_search(current_user)
     end
@@ -273,7 +281,7 @@ end
 
 def display_movie_info(info)
     menu_banner("Movie Info")
-    puts "This is what we found:"
+    puts " Movie's information:"
     puts
     puts " Title        ~  #{ info.title }"
     puts " Release date ~  #{ info.release_date }"
@@ -284,7 +292,6 @@ def display_movie_info(info)
     puts "                 #{ info.plot[101..200] }"
     puts "                 #{ info.plot[201..300] }"
     puts
-    return
 end
 
 def lucky_search(current_user)
@@ -313,15 +320,18 @@ def lucky_search(current_user)
         print " => "
         response = gets.chomp.downcase
         check_responses(response, 'search')
+        if response == 'user_menu' or response == 'user' or response == 'u'
+            user_menu(current_user)
+        end
         if response == '1' or response == 'y' or response == 'yes'
             check = MovieWatchlist.where("user_id = #{current_user.id} and movie_id = #{info.id}")
             if check.size != 0
-                puts "You already have this movie in your list!\n(Press Enter to continue...)"
+                puts "* You already have this movie in your list! *\n(Press Enter to continue...)"
                 gets
                 movie_search(current_user)
             end
             MovieWatchlist.create(user_id: current_user.id, movie_id: info.id, rating: 0.0, review: "Has not been reviewed yet.", watched: false)
-            puts "Movie was added to your watchlist! We'll be sure to keep an eye on it for you."
+            puts "* Movie was added to your watchlist! We'll be sure to keep an eye on it for you. *"
             gets
             movie_search(current_user)
         elsif response == '2' or response == 'n' or response == 'no'
@@ -329,36 +339,89 @@ def lucky_search(current_user)
         else
             next
         end
+    end
 end
 
-def view_watchlist(current_user)
+def get_user_movie_list(current_user)
     movie_list = []
     MovieWatchlist.all.each do |item|
         if item.user_id == current_user.id
-            movie_list << item.movie
+            movie_list << item
         end
     end
+    return movie_list
+end
+
+def view_watchlist(current_user)
+    movie_list = get_user_movie_list(current_user)
     menu_banner(current_user.name)
     if movie_list.size == 0
-        puts "* Aww, it seems you don't have any movies in your list yet.\nYou should search for movies and add them in!  <(^_^)> *"
+        puts "* Aww, it seems you don't have any movies in your list yet. *\n* You should search for movies and add them in!  <(^_^)> *\n  (Press Enter to continue...)"
         gets
         user_menu(current_user)
     end
-    puts "Current list:"
+    puts "Your current list:"
+    puts
     for index in 0...movie_list.size
         if index > 99
-            puts " #{ index + 1 })\t #{ movie_list[index].title }"
+            puts " #{ index + 1 })\t #{ movie_list[index].movie.title }"
         end
         if index > 10
-            puts "  #{ index + 1 })\t #{ movie_list[index].title }"
+            puts "  #{ index + 1 })\t #{ movie_list[index].movie.title }"
         end
         if index < 10
-            puts "   #{ index + 1 })\t #{ movie_list[index].title }"
+            puts "   #{ index + 1 })\t #{ movie_list[index].movie.title }"
         end
     end
-    gets
     watchlist_menu(current_user, movie_list)
 end
 
+def watchlist_menu(current_user, movie_list)
+    puts
+    puts "* What would you like to do?"
+    puts
+    puts " 1) Check movie info"
+    puts " 2) Remove movie from list"
+    puts " 3) Update your movie's rating/review"
+    puts
+    go_back_user_menu
+    puts
+    print " => "
+    response = gets.chomp.downcase
+    check_responses(response, "user")
+    if response == '1'
+        user_movie_info(current_user, movie_list)
+    elsif response == '2'
+        remove_movie_from_user_list(current_user, movie_list)
+    elsif response == '3'
+        update_user_rating_review(current_user, movie_list)
+    else
+        view_watchlist(current_user)
+    end
+ 
+end
 
-    
+def user_movie_info(current_user, movie_info)
+    puts "Put in the number of the movie in the list that\nyou would like to view the information for:\n(1 - #{movie_info.size})"
+    while true
+        print " => "
+        response = gets.chomp.downcase
+        check_responses(response, 'user')
+        response = response.to_i
+        if response != 0 and response <= movie_info.size and response > 0
+            display_movie_info(movie_info[response - 1].movie)
+            puts " Your rating: #{movie_info[response-1].rating}"
+            puts " Your review: #{movie_info[response-1].review}"
+            gets
+            view_watchlist(current_user)
+        else
+            puts "* Please enter a number for a movie on your list. *\n(Press Enter to continue)"
+            gets
+            next
+        end
+    end
+end
+
+def remove_movie_from_user_list(current_user, movie_list)
+    binding.pry
+end
