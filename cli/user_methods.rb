@@ -12,7 +12,6 @@ def user_sort_by_menu
     selection = prompt.select("How would you like to sort users?") do |menu|
         menu.choice 'By Name', 1
         menu.choice 'By Rank', 2
-        menu.choice 'By Popularity', 3
     end
 end
 
@@ -35,10 +34,6 @@ def search_users_by_rank
     prompt = TTY::Prompt.new
     prompt.select("Which user are you looking for?", choices)
 end
-
-def search_users_by_popularity
-end
-
 
 def get_user_profile(user)
     print_profile(user)
@@ -111,3 +106,4 @@ def user_rank(user)
     user.rank = monster_rank.inject(0){|sum, x| sum + x} + user_posts
     end
 end
+
