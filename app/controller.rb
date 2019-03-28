@@ -20,17 +20,19 @@ class TicTalkApp
   end
 
   def self.welcome_message
+    system "clear"
     puts "Welcome to TicTalk"
     find_out_who
   end
 
   def self.find_out_who
     name = @@prompt.ask("Please enter your name to continue:")
+    system "clear"
     if User.all.find_by(name: name)
-      puts "Welcome back!"
+      puts "Welcome back #{name}!"
       @user = User.all.find_by(name: name)
     else
-      puts "Nice to meet you!"
+      puts "Nice to meet you #{name}!"
       @user = User.create(name: name.to_s)
     end
   end
@@ -82,7 +84,7 @@ class TicTalkApp
   end
 
   def self.by_date
-    entry = @@prompt.ask("Please enter the date you want to look for: (YYYY/MM/DD)")
+    entry = @@prompt.ask("Please enter the date you want to look for: (YYYY-MM-DD)")
     list = Event.where('date = ?', entry)
     if list == []
       puts "Sorry no events on this day. Choose again."
@@ -205,17 +207,23 @@ class TicTalkApp
      x
    end
     selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
-    display_event(selection)
+    display = display_event(selection)
+    ticket_options_upcoming(display)
+  end
+  
+  def self.ticket_options_upcoming(display)
     selection2 = @@prompt.select("Next?", ["Leave some TicTalk","Read some TicTalk", "View Other Upcoming Events", "Return to Main Menu"])
     if selection2 == "Leave some TicTalk"
-      add_comment(selection)
+      add_comment(display.id)
     elsif
       selection2 == "Read some TicTalk"
-      view_comments(Event.find(selection))
+      view_comments_upcoming(display)
     elsif
       selection2 =="View Other Upcoming Events"
+      system "clear"
       upcoming_events
     else
+      system "clear"
       main_menu
     end
   end
@@ -231,22 +239,28 @@ class TicTalkApp
      x
    end
     selection = @@prompt.select("Here are your Past events", my_past_list)
-    display_event(selection)
-    selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "Read some TicTalk" "View Other Past Events", "Return to Main Menu"])
+    display = display_event(selection)
+    ticket_options_past(display)
+  end
+
+  def self.ticket_options_past(display)  
+    selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "Read some TicTalk", "View Other Past Events", "Return to Main Menu"])
     if selection2 == "Leave some TicTalk"
-      add_comment(selection)
+      add_comment(display.id)
     elsif
       selection2 == "Read some TicTalk"
-      view_comments(Event.find(selection))
+      view_comments_past(display)
     elsif selection2 == "View Other Past Events"
+      system "clear"
       past_events
     else
+      system "clear"
       main_menu
     end
   end
 
-  def dashboard
-  end
+  # def dashboard
+  # end
 
   def self.logout
     puts "Thanks for stopping by!"
@@ -254,11 +268,12 @@ class TicTalkApp
   end
 
   def self.display_event(selection)
-
+    system "clear"
     display = Event.find(selection)
     puts "Selected Event:"
-    puts display.date, display.name
-    puts display.venue, display.location
+    puts "="*30
+    puts "Date: #{display.date}", "Name: #{display.name}", "Venue: #{display.venue}", "Location: #{display.location}", "Starting Price: $#{display.price}"
+    puts "="*30
     display
   end
 
@@ -267,43 +282,46 @@ class TicTalkApp
     choice = @@prompt.select("What would you like to do?", options)
     if choice == "Read the TicTalk"
       self.view_comments(display)
-      puts "Great! What would you like to do next?"
-      ticket_options(display)
     elsif choice == "Add to MyWish List"
+      system "clear"
       self.add_to_wishlist(display)
       puts "Great! What would you like to do next?"
       main_menu
     elsif
       choice == "Buy a ticket"
+      system "clear"
       self.buy_a_ticket(display)
       puts "Great! What would you like to do next?"
       main_menu
     elsif
       choice == "Return to Search"
+      system "clear"
       self.run_search
     else
       choice == "Return to Main Menu"
+      system "clear"
       self.main_menu
     end
   end
 
+
   def self.display_event_from_wishlist(selection)
+    system "clear"
     display1 = Ticket.find(selection)
     display = Event.find(display1.event_id)
     puts "Selected Event:"
-    puts display.date, display.name
-    puts display.venue, display.location
+    puts "="*30
+    puts "Date: #{display.date}", "Name: #{display.name}", "Venue: #{display.venue}", "Location: #{display.location}", "Starting Price: $#{display.price}"
+    puts "="*30
     options = ["Buy this ticket","Remove from Wishlist","Return to Search","Return to Main Menu"]
     choice = @@prompt.select("What would you like to do?", options)
     if choice == "Buy this ticket"
-      self.update_ticket_status(selection)
-      puts "Great! What would you like to do next?"
-      main_menu
+      system "clear"
+      update_ticket_status(selection)
     elsif
       choice == "Remove from Wishlist"
-      Ticket.delete(selection)
-      puts "We have cleared that out for you. What would you like next?"
-      main_menu
+      system "clear"
+      delete_ticket(selection)
     elsif
       choice == "Return to Search"
       self.run_search
@@ -323,9 +341,14 @@ class TicTalkApp
   end
 
   def self.update_ticket_status(selection)
-
     Ticket.update(selection, :status => "bought")
+    puts "Great! What would you like to do next?"
+    main_menu
+  end
 
+  def self.delete_ticket(selection)
+    Ticket.delete(selection)
+    puts "We have cleared that out for you. What would you like next?"
     main_menu
   end
 
@@ -333,6 +356,7 @@ class TicTalkApp
     comment = @@prompt.multiline("Enter your comments here:")
     ask = @@prompt.yes?('Would you recomment this event?', convert: :bool)
     x = Review.create(user_id: @user.id, event_id: selection,content: comment.join, recommend: ask)
+    system "clear"
     puts "Thanks for your TicTalk!"
     main_menu
   end
@@ -359,6 +383,59 @@ class TicTalkApp
    end
     selection = @@prompt.select("Select a comment to return to event details:", list)
     ticket_options(event)
+  end
+
+  def self.view_comments_upcoming(event)
+    comment_list = Review.where('event_id =?', event.id)
+
+    if comment_list == []
+      puts "No TicTalk for this event yet."
+      ticket_options_upcoming(event)
+    else
+      list = comment_list.map do |comment|
+      n = User.find(comment.user_id)
+        rcm = if comment.recommend == true
+          "Yes"
+        else
+          "No"
+        end
+      x = {}
+      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
+      x[:value] = comment.event_id
+      x
+    end
+   end
+    selection = @@prompt.select("Select a comment to return to event details:", list)
+    system "clear"
+    display_event(selection)
+    ticket_options_upcoming(event)
+  end
+
+
+  def self.view_comments_past(event)
+    comment_list = Review.where('event_id =?', event.id)
+    binding.pry
+    if comment_list == []
+      puts "No TicTalk for this event yet."
+      ticket_options_past(event)
+    else
+      list = comment_list.map do |comment|
+      n = User.find(comment.user_id)
+        rcm = if comment.recommend == true
+          "Yes"
+        else
+          "No"
+        end
+      x = {}
+      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
+      x[:value] = comment.event_id
+      x
+      end
+    end
+    selection = @@prompt.select("Select a comment to return to event details:", list)
+    binding.pry
+    # display_event(selection)
+    ticket_options_past(event)
   end
 
   #def self.find_or_create_ticket(display, selection)

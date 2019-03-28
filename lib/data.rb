@@ -9,8 +9,7 @@ response = RestClient.get(url)
 data = JSON.parse(response.body)
 
 
-# binding.pry
-File.write('./raw_data.rb', data)
+# File.write('./raw_data.rb', data)
 
 # File.write('./raw_data.rb', data)
 
@@ -20,8 +19,9 @@ File.write('./raw_data.rb', data)
 #genre = data["_embedded"]["events"][0]["classifications"][0]["genre"]["name"]
 #date = data["_embedded"]["events"][0]["dates"]["start"]["localDate"]
 #start_time = data["_embedded"]["events"][0]["dates"]["start"]["localTime"]
+#price = data["_embedded"]["events"][11]["priceRanges"][0]["min"]
 
-File.open('./test.rb', 'w') { |file| file.truncate(0) }
+# File.open('./test.rb', 'w') { |file| file.truncate(0) }
 
 data["_embedded"]["events"].each do |event|
     name = event["name"]
@@ -34,8 +34,13 @@ data["_embedded"]["events"].each do |event|
     end
     date = event["dates"]["start"]["localDate"]
     start_time = event["dates"]["start"]["localTime"]
-    seed_line = "Event.create(name: \"#{name}\",location: \"#{location}\",venue: \"#{venue}\",genre: \"#{genre}\",date: \"#{date}\",start_time: \"#{start_time}\")"
-    File.open('../db/seeds.rb',"a") do |line|
+    if event["priceRanges"] == nil
+      price = nil
+    else
+      price = event["priceRanges"][0]["min"]
+    end
+    seed_line = "Event.create(name: \"#{name}\",location: \"#{location}\",venue: \"#{venue}\",genre: \"#{genre}\",date: \"#{date}\",start_time: \"#{start_time}\",price: \"#{price}\")"
+    File.open('./db/seeds.rb',"a") do |line|
       line.puts "\r" + seed_line
     end
 end
