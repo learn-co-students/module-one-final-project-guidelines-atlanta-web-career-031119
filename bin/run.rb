@@ -30,7 +30,7 @@ class CommandLineInterface
       user_login
       sleep(1)
     else user_input == "No" || user_input == "NO" || user_input == "no"
-      exit 
+      exit
     end
   end
 
@@ -101,9 +101,24 @@ class CommandLineInterface
   end
 
   def courses_for_your_grade
-    my_subjects = @user.grade.subjects
-    puts "Your courses are : #{my_subjects}"
-    main_menu
+    puts " "
+   if @user.grade_id == 9
+     puts Subject.all.where(grade_id: 9).sort.map {|x| x.name}
+     sleep (3)
+     main_menu
+   elsif @user.grade_id == 10
+     puts Subject.all.where(grade_id: 10).sort.map {|x| x.name}
+     sleep (3)
+     main_menu
+   elsif @user.grade_id == 11
+     puts Subject.all.where(grade_id: 11).sort.map {|x| x.name}
+     sleep (3)
+     main_menu
+   elsif @user.grade_id == 12
+     puts Subject.all.where(grade_id: 12).sort.map {|x| x.name}
+     sleep (3)
+     main_menu
+   end
   end
 
   def add_course_menu
