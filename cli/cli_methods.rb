@@ -47,6 +47,7 @@ sleep(0.1)
 puts pastel.bright_cyan (%(=================================================================================================))
 end
 
+
 def user_login
     prompt = TTY::Prompt.new
     @pastel = Pastel.new
@@ -58,9 +59,11 @@ def user_login
       if User.exists?(['name LIKE ?', "%#{result}%"])
        puts @pastel.command(@straight.write("Welcome  back, #{result}!"))
        return User.find_by_name(result)
-      else
-        puts "Hmmm, I don't see that name..."
-        yes_or_no = ("Would you like to create an account?")
+      end
+    end
+
+def create_account
+    yes_or_no = ("Would you like to create an account?")
         if yes_or_no == true
             new_user = User.create(name: result)
             puts "Welcome to Cryptid Hunter " + @pastel.red("#{result}!")
@@ -70,7 +73,6 @@ def user_login
             return new_user
         end
     end
-end
 
 def menu
     pastel = Pastel.new

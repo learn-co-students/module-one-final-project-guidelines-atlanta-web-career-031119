@@ -42,6 +42,11 @@ if menu_choice == 3
         title = get_most_recent_posts
         get_post_by_title(title)
     end
+
+    if option == 4
+        title = get_most_popular_posts
+        get_post_by_title(title)
+    end
 end
 
     #------------SEARCH FOR A MONSTER MENU-------------#
@@ -64,8 +69,6 @@ if menu_choice == 5
         elsif selection == 2
             name = search_users_by_rank
             get_user_by_name(name)
-        elsif selection == 3
-            name = search_users_by_popularity
         end
 
 end

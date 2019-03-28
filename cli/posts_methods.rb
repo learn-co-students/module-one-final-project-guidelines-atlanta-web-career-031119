@@ -63,6 +63,7 @@ def post_menu
         menu.choice "By User", 1
         menu.choice "By Monster", 2
         menu.choice "Most Recent", 3
+        menu.choice "Most Popular", 4
     end
 end
 
@@ -108,11 +109,23 @@ end
 
 
 
+
 def get_most_recent_posts
     posts = Post.all.order('created_at DESC')
     choices = []
     list = TTY::Prompt.new
     posts.each do |post|
+        choices << post.title
+    end
+    list.select(@pastel.command(@straight.write("Which post would you like to read?")), choices)
+end
+
+def get_most_popular_posts
+    choices = []
+    posts = Post.all
+    sorted = posts.sort_by {|post| post.likes.count}
+    list = TTY::Prompt.new
+    sorted.reverse.each do |post|
         choices << post.title
     end
     list.select(@pastel.command(@straight.write("Which post would you like to read?")), choices)

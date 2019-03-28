@@ -43,8 +43,10 @@ module List
         puts "by "+ @pastel.cyan.bold("#{post.user.name}") +  " who encountered a " + @pastel.bold("#{post.monster.name}")
         puts " "
         puts "#{post.content}"
+        puts " "
+        puts "Likes " + @pastel.cyan.bold("#{num_of_likes(post)}")
         puts @pastel.green("-")*50
-        puts "Like this post #{post.likes.length}"
+        like?(post)
         get_comments_for_post(post)
         end
     end

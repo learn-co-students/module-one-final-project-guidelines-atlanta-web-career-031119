@@ -12,4 +12,5 @@ require_relative '../cli/user_methods'
 require_relative '../cli/monster_methods'
 require_relative '../cli/posts_methods'
 require_relative '../cli/comment_methods'
+require_relative '../cli/like_methods'
 
