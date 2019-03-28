@@ -44,6 +44,7 @@ module List
         puts " "
         puts "#{post.content}"
         puts @pastel.green("-")*50
+        puts "Like this post #{post.likes.length}"
         get_comments_for_post(post)
         end
     end
