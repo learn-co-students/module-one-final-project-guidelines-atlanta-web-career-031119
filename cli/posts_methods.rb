@@ -1,3 +1,4 @@
+
 @pastel = Pastel.new
 @straight = TTY::Font.new(:straight)
 @blocks = TTY::Font.new(:standard)
