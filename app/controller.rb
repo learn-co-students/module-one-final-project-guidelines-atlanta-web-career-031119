@@ -49,9 +49,9 @@ class TicTalkApp
     elsif
       choice == "My Past Events"
       past_events
-    elsif
-      choice == "Dashboard"
-      dashboard
+    #elsif
+    #  choice == "Dashboard"
+    #  dashboard
     elsif
       choice == "Logout"
       self.logout
@@ -175,8 +175,8 @@ class TicTalkApp
    end
     selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
     display_event(selection)
-    selection2 = @@prompt.select("Next?", ["Leave a Comment", "View Other Upcoming Events", "Return to Main Menu"])
-    if selection2 == "Leave a Comment"
+    selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "View Other Upcoming Events", "Return to Main Menu"])
+    if selection2 == "Leave some TicTalk"
       add_comment(selection)
     elsif
       selection2 =="View Other Upcoming Events"
@@ -189,11 +189,19 @@ class TicTalkApp
   def self.past_events
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
     my_past_events = my_bought_events.select {|event| event.date < DateTime.now.to_s[0..9] }
-    my_past_list = my_past_events.map {|event| event.name }
+    #my_past_list = my_past_events.map {|event| event.name }
+    my_past_list = my_past_events.map do |event|
+     x = {}
+     x[:name] = event.name
+     x[:value] = event.id
+     x
+   end
     selection = @@prompt.select("Here are your Past events", my_past_list)
     display_event(selection)
-    selection2 = @@prompt.select("Next?", ["View Other Past Events", "Return to Main Menu"])
-    if selection2 == "View Other Past Events"
+    selection2 = @@prompt.select("Next?", ["Leave some TicTalk", "View Other Past Events", "Return to Main Menu"])
+    if selection2 == "Leave some TicTalk"
+      add_comment(selection)
+    elsif selection2 == "View Other Past Events"
       past_events
     else
       main_menu
@@ -283,13 +291,13 @@ class TicTalkApp
   def self.add_comment(selection)
 
     comment = @@prompt.multiline("Enter your comments here:")
-    # ask = @@prompt.yes?('Would you recomment this event?')
+     ask = @@prompt.yes?('Would you recomment this event?', convert: :bool)
     # recommend = if ask == Yes
     #   1
     # else
     #   0
     # end
-    x = Review.create(user_id: @user.id, event_id: selection,content: comment, recommend: nil)
+    x = Review.create(user_id: @user.id, event_id: selection,content: comment, recommend: ask)
     puts "Thanks for your TicTalk!"
     main_menu
   end
