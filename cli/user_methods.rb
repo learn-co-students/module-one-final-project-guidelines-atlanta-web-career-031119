@@ -7,6 +7,15 @@ def get_users_names
     User.pluck(:name)
 end
 
+def user_sort_by_menu
+    prompt = TTY::Prompt.new
+    selection = prompt.select("How would you like to sort users?") do |menu|
+        menu.choice 'By Name', 1
+        menu.choice 'By Rank', 2
+        menu.choice 'By Popularity', 3
+    end
+end
+
 def search_users_by_name
     choices = []
     users = get_users_names
@@ -16,6 +25,20 @@ def search_users_by_name
     prompt = TTY::Prompt.new
     prompt.select("Which user are you looking for?", choices)
 end
+
+def search_users_by_rank
+    choices = []
+    user_by_rank = User.all.order(:rank)
+    user_by_rank.each do |user|
+        choices << user.name
+    end
+    prompt = TTY::Prompt.new
+    prompt.select("Which user are you looking for?", choices)
+end
+
+def search_users_by_popularity
+end
+
 
 def get_user_profile(user)
     print_profile(user)
@@ -79,4 +102,12 @@ def update_bio
     sleep(1)
 end
 
-
+def user_rank(user)
+    if user.monsters == nil || user.posts == nil
+        user.rank = 0
+    else
+    monster_rank = user.monsters.map {|monster| monster.danger_rating }
+    user_posts = user.posts.length
+    user.rank = monster_rank.inject(0){|sum, x| sum + x} + user_posts
+    end
+end

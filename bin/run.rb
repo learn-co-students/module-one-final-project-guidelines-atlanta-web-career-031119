@@ -57,8 +57,17 @@ end
 
     #------------SEARCH FOR A USER MENU-------------#
 if menu_choice == 5
-    selection = search_users_by_name
-    get_user_by_name(selection)
+    selection = user_sort_by_menu
+        if selection == 1
+            selection = search_users_by_name
+            get_user_by_name(selection)
+        elsif selection == 2
+            name = search_users_by_rank
+            get_user_by_name(name)
+        elsif selection == 3
+            name = search_users_by_popularity
+        end
+
 end
 
     #------------MY PROFILE MENU-------------#

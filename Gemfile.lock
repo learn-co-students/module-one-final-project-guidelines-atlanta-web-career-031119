@@ -79,6 +79,7 @@ PLATFORMS
 
 DEPENDENCIES
   activemodel
+  awesome_print
   pastel
   pry
   rake

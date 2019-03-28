@@ -21,6 +21,7 @@ def create_new_post
     monster_name = select_monster
     monster = Monster.find_by_name(monster_name)
     Post.create(user_id: @current_user.id, title: title, content: content, monster_id: monster.id)
+    user_rank(@current_user)
 end
 
 def delete_or_edit
@@ -51,7 +52,7 @@ end
 
 def edit_post(post_to_edit)
    prompt = TTY::Prompt.new
-   get_post_by_title(post_to_edit.title)
+   print_posts(post_to_edit)
    to_edit = prompt.ask("What would you like the edited post to say?")
    post_to_edit.update(content: to_edit)
 end
@@ -73,7 +74,6 @@ end
 def print_posts_current_user(user)
     user.posts.each do |post|
         print_posts(post)
-        get_comments_for_post(post)
     end
 end
 
@@ -86,11 +86,7 @@ def print_posts_by_user(selection)
     else
     posts.each do |post|
     print_posts(post)
-    get_comments_for_post(post)
-    comment = prompt.yes?(@pastel.command('Would you like to leave a comment?'))
-        if comment == true
-            comment_on_post(post)
-            end
+    leave_comment?(post)
         end
     end
  end
@@ -100,14 +96,14 @@ def print_posts_by_user(selection)
     posts = monster.posts
     posts.each do |post|
         print_posts(post)
-        comment_on_post(post)
+        leave_comment?(post)
     end
 end
 
 def get_post_by_title(title)
     post = Post.find_by_title(title)
     print_posts(post)
-    comment_on_post(post)
+    leave_comment?(post)
 end
 
 
