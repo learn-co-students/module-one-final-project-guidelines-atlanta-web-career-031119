@@ -2,8 +2,9 @@
 def welcome
     pastel = Pastel.new
     prompt = TTY::Prompt.new
+    doom = TTY::Font.new(:doom)
 
-puts pastel.red ("Welcome to.......")
+puts pastel.red.bold(doom.write("Welcome to.......".upcase))
 sleep(0.5)
 puts pastel.bright_cyan (%(=================================================================================================))
 sleep(0.1)
