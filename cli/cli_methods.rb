@@ -75,13 +75,14 @@ def menu
     pastel = Pastel.new
     prompt = TTY::Prompt.new
     prompt.select("What would you like to do?") do |menu|
-    menu.choice pastel.red('Write a new post'), 1
+    menu.per_page 9
+    menu.choice pastel.bright_green('Write a new post'), 1
     menu.choice pastel.bright_cyan('Edit a post'), 2
     menu.choice pastel.bright_magenta('Read posts'), 3
-    menu.choice pastel.bright_green('Search for a monster'), 4
+    menu.choice pastel.bright_yellow('Search for a monster'), 4
     menu.choice pastel.bright_yellow('Search for a specific user'), 5
-    menu.choice pastel.bright_red('My profile'), 6
-    menu.choice pastel.green('Exit'), 9
+    menu.choice pastel.bright_green('My profile'), 6
+    menu.choice pastel.red('Exit'), 9
     end
 end
 
