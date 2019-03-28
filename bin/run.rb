@@ -3,9 +3,9 @@ require 'pry'
 
 class CommandLineInterface
 
-def initialize
-@user = nil
-end
+  def initialize
+  @user = nil
+  end
 
 
   def welcome
@@ -30,7 +30,7 @@ end
       user_login
       sleep(1)
     else user_input == "No" || user_input == "NO" || user_input == "no"
-      puts "Goodbye!"
+      exit 
     end
   end
 
@@ -78,7 +78,7 @@ end
     if user_input == "1"
       all_courses
     elsif user_input == "2"
-      your_course_menu
+      courses_for_your_grade
     elsif user_input == "3"
       add_course_menu
     elsif user_input == "4"
@@ -95,12 +95,12 @@ end
   end
 
   def all_courses
-    courses = Subject.all.map {|subject| subject.name}
+    courses = Subject.all.map {|subject| subject.name}.sort.join(", ")
     puts "Here is a comprehensive list of all our courses: #{courses}"
     main_menu
   end
 
-  def your_course_menu
+  def courses_for_your_grade
     my_subjects = @user.grade.subjects
     puts "Your courses are : #{my_subjects}"
     main_menu
