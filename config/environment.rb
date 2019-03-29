@@ -1,4 +1,6 @@
 require 'bundler'
+require 'launchy'
+# gem install launchy
 # require 'rest-client'
 # require 'json'
 # require 'pry'
@@ -6,9 +8,10 @@ require 'bundler'
 # omdb api key: 92d4118f
 
 
-
 Bundler.require
 
+ActiveSupport::Deprecation.silenced = true
+ActiveSupport::Deprecation.behavior = :silence
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
 ActiveRecord::Base.logger = nil
 require_all 'app'

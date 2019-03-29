@@ -6,6 +6,7 @@ class CreateMovieWatchlist < ActiveRecord::Migration[5.0]
       t.boolean   :watched
       t.float     :rating
       t.text      :review
+      t.boolean   :keep_in_list
     end
   end
 end

@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20190325205845) do
     t.boolean "watched"
     t.float   "rating"
     t.text    "review"
+    t.boolean "keep_in_list"
   end
 
   create_table "movies", force: :cascade do |t|
@@ -30,12 +31,14 @@ ActiveRecord::Schema.define(version: 20190325205845) do
     t.string "release_date"
     t.float  "rating"
     t.string "runtime"
+    t.string "genre"
     t.text   "plot"
     t.text   "main_cast"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
+    t.string  "name"
+    t.boolean "hidden"
   end
 
 end
