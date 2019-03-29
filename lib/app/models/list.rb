@@ -49,7 +49,7 @@ module List
         like?(post)
         get_comments_for_post(post)
         end
-    end
+
 
     def leave_comment?(post)
         comment = @prompt.yes?(@pastel.command('Would you like to leave a comment?'))
@@ -57,3 +57,16 @@ module List
             comment_on_post(post)
         end
     end
+
+    def print_my_posts(post)
+        puts @pastel.green(" * ") * 20
+        puts @pastel.bright_red.bold("Title: #{post.title}")
+        puts "by "+ @pastel.cyan.bold("#{post.user.name}") +  " who encountered a " + @pastel.bold("#{post.monster.name}")
+        puts " "
+        puts "#{post.content}"
+        puts " "
+        puts "Likes " + @pastel.cyan.bold("#{num_of_likes(post)}")
+        puts @pastel.green("-")*50
+        get_comments_for_post(post)
+        end
+end

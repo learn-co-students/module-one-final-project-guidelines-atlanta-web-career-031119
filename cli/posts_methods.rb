@@ -74,7 +74,7 @@ end
 
 def print_posts_current_user(user)
     user.posts.each do |post|
-        print_posts(post)
+        print_my_posts(post)
     end
 end
 
