@@ -5,6 +5,7 @@ class CommandLineInterface
 
   def initialize
   @user = nil
+  @schedule = []
   end
 
 
@@ -66,13 +67,14 @@ class CommandLineInterface
     puts ""
     puts "Main Menu"
     puts "View a list of all courses. (1)"
-    puts "View your courses. (2)"
-    puts "Add a course. (3)"
-    puts "View all materials for a course (4)"
-    puts "Update materials needed for a course. (5)"
-    puts "View all materials for a grade. (6)"
-    puts "See all users in a grade. (7)"
-    puts "Exit Application (8)."
+    puts "View all courses offered for your grade level. (2)"
+    puts "Add a course to the list of courses. (3)"
+    puts "Add a course to your schedule. (4)"
+    puts "View all materials for a course (5)"
+    puts "Update materials needed for a course. (6)"
+    puts "View all materials for a grade. (7)"
+    puts "See all users in a grade. (8)"
+    puts "Exit Application (9)."
 
     user_input = gets.chomp
     if user_input == "1"
@@ -82,14 +84,16 @@ class CommandLineInterface
     elsif user_input == "3"
       add_course_menu
     elsif user_input == "4"
-      materials_for_course
+      add_course_to_schedule
     elsif user_input == "5"
-      update_materials
+      materials_for_course
     elsif user_input == "6"
-      materials_for_grade
+      update_materials
     elsif user_input == "7"
+      materials_for_grade
+    elsif user_input == "8"
       all_users_in_x_grade
-    else user_input == "8"
+    else user_input == "9"
       exit
     end
   end
@@ -97,25 +101,26 @@ class CommandLineInterface
   def all_courses
     courses = Subject.all.map {|subject| subject.name}.sort.join(", ")
     puts "Here is a comprehensive list of all our courses: #{courses}"
+    sleep(3)
     main_menu
   end
 
   def courses_for_your_grade
     puts " "
-   if @user.grade_id == 9
-     puts Subject.all.where(grade_id: 9).sort.map {|x| x.name}
+   if @user.grade.grade_level == 9
+     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
      sleep (3)
      main_menu
-   elsif @user.grade_id == 10
-     puts Subject.all.where(grade_id: 10).sort.map {|x| x.name}
+   elsif @user.grade.grade_level == 10
+     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
      sleep (3)
      main_menu
-   elsif @user.grade_id == 11
-     puts Subject.all.where(grade_id: 11).sort.map {|x| x.name}
+   elsif @user.grade.grade_level == 11
+     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
      sleep (3)
      main_menu
-   elsif @user.grade_id == 12
-     puts Subject.all.where(grade_id: 12).sort.map {|x| x.name}
+   elsif @user.grade.grade_level == 12
+     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
      sleep (3)
      main_menu
    end
@@ -125,7 +130,42 @@ class CommandLineInterface
     puts "Please enter the name of the course you want to add"
     name = gets.chomp
     Subject.create(name: name, grade_id: @user.grade_id)
-    puts "You have added #{name} to your course list!"
+    puts "You have added #{name} to the master course list!"
+    main_menu
+  end
+
+  def add_course_to_schedule
+    puts "Please choose a course to add to your schedule from the following options:"
+    if @user.grade.grade_level == 9
+      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
+      sleep (1)
+      user_input = gets.chomp
+      @schedule << user_input
+      my_schedule
+    elsif @user.grade.grade_level == 10
+      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
+      sleep (1)
+      user_input = gets.chomp
+      @schedule << user_input
+      my_schedule
+    elsif @user.grade.grade_level == 11
+      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
+      sleep (1)
+      user_input = gets.chomp
+      @schedule << user_input
+      my_schedule
+    elsif @user.grade.grade_level == 12
+      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
+      sleep (1)
+      user_input = gets.chomp
+      @schedule << user_input
+      my_schedule
+    end
+  end
+
+  def my_schedule
+    puts "Here are the following courses in your schedule:"
+    puts @schedule
     main_menu
   end
 
@@ -134,34 +174,52 @@ class CommandLineInterface
     course1 = gets.chomp
     subject2 = Subject.all.find{|x| x.name == course1}
     mats = subject2.materials
-    name = mats.map {|x| x.name}.join(" ")
-    puts "The Materials for grade #{course1} are: #{name}"
+    name = mats.map {|x| x.name}.join(", ")
+    puts "Here are the materials required for #{course1}: #{name}"
+    sleep(2)
     main_menu
   end
 
   def update_materials
-    puts "Please enter the name of the supply you would like to update:"
-    name = gets.chomp
-    puts "Please enter the subject for the supply:"
-    subject = gets.chomp
-    @material = Material.find_or_create_by(name: name, subject_id: Subject.all.sample.id)
-    main_menu
+    puts "Would you like to add or delete a material required for a course?"
+    puts "Type add or delete"
+    user_input = gets.chomp
+    if user_input == "add" || user_input == "Add"
+      puts "Please enter the name of the supply you would like to add:"
+      name = gets.chomp
+      puts "Please enter the subject for the supply:"
+      course = gets.chomp
+      match = Subject.all.find {|x| x.name == course}
+      @material = Material.find_or_create_by(name: name, subject_id: match.id)
+      puts "Thanks for adding #{name.downcase} as a material required for #{course}."
+      main_menu
+    elsif user_input == "delete" || user_input == "Delete"
+      # binding.pry
+      puts "Please enter the subject to delete the material from:"
+      course = gets.chomp
+      puts "Here are all of the materials currently required for #{course}:"
+      mats = Subject.all.find {|x| x.name == course}.materials.map {|x| x.name}.join(", ")
+      puts mats
+      sleep(1)
+      puts "Please enter the name of the material you would like to delete for #{course}:"
+      mat_name = gets.chomp
+      Material.destroy(Subject.all.find {|x| x.name == course}.materials.where(name: mat_name)[0])
+      main_menu
+    end
   end
 
-  def materials_for_grade
+  def materials_for_grade #fix this method
     puts "Which grade?"
     grade = gets.chomp.to_i
-    list_of_materials = Grade.all.find{|x| x.grade_level == grade}.subjects.map {|x| x.materials}[0]
-    one_array = list_of_materials.map {|x| x.name}.join(" ")
-    each_item = one_array
-    puts "The Materials for grade #{grade} are: #{one_array}"
+    list_of_materials = Grade.all.find{|x| x.grade_level == grade}.subjects.map {|x| x.materials}.flatten.map {|x| x.name}.sort.join(", ")
+    puts "The Materials for grade #{grade} are: #{list_of_materials}"
     main_menu
   end
 
   def all_users_in_x_grade
     puts "Which grade?"
     grade = gets.chomp.to_i
-    users =  Grade.all.find {|x| x.grade_level == grade}.users.map {|x| x.name}.join (" ")
+    users =  Grade.all.find {|x| x.grade_level == grade}.users.map {|x| x.name}.join (", ")
     puts "The Users for grade #{grade} are: #{users}"
     main_menu
   end
