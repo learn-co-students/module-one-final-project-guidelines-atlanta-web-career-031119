@@ -1,30 +1,33 @@
 require_relative '../config/environment'
 require 'pry'
+require 'pastel'
 
 class CommandLineInterface
 
   def initialize
   @user = nil
   @schedule = []
+  @pastel = Pastel.new
   end
 
 
   def welcome
+    pastel = Pastel.new
     font = TTY::Font.new(:standard)
     interpolated = font.write("School Scheduler")
 
-    puts "WELCOME TO"
-    sleep(2)
+    puts pastel.green("WELCOME TO")
+    # sleep(2)
     puts interpolated
-    sleep(3)
+    # sleep(3)
 
-    puts "Be prepared for your first day of classes!"
-    sleep(2)
+    puts pastel.green("Be prepared for your first day of classes!")
+    # sleep(2)
 
-    puts "Use School Scheduler to add classes to your schedule, find materials needed for your classes, and more!"
-    sleep(2)
+    puts pastel.green("Use School Scheduler to add classes to your schedule, find materials needed for your classes, and more!")
+    # sleep(2)
 
-    puts "Would you like to continue? Yes or No"
+    puts pastel.green("Would you like to continue? Yes or No")
 
     user_input = gets.chomp
     if user_input == "Yes" || user_input == "YES" || user_input == "yes"
@@ -36,27 +39,32 @@ class CommandLineInterface
   end
 
   def user_login
-    puts "Please enter your name"
+    pastel = Pastel.new
+    puts pastel.green("Please enter your name")
     name = gets.chomp
-    puts "Please enter your age"
+    puts pastel.green("Please enter your age")
     age = gets.chomp
-    puts "Select your grade from the following options:\nFreshman   Sophomore   Junior   Senior"
+    puts pastel.green ("Select your grade from the following options :\nFreshman   Sophomore   Junior   Senior")
     grade = gets.chomp
     if grade == "Freshman"
       found_grade_nine = Grade.find_by(grade_level: 9)
       @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_nine.id)
+      sleep(2)
       main_menu
     elsif grade == "Sophomore"
       found_grade_ten = Grade.find_by(grade_level: 10)
       @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_ten.id)
+      sleep(2)
       main_menu
     elsif grade == "Junior"
       found_grade_eleven = Grade.find_by(grade_level: 11)
       @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_eleven.id)
+      sleep(2)
       main_menu
     elsif grade == "Senior"
       found_grade_twelve = Grade.find_by(grade_level: 12)
       @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_twelve.id)
+      sleep(2)
       main_menu
     else
       puts "Sorry, that is not a valid grade. Please start over."
@@ -65,8 +73,11 @@ class CommandLineInterface
   end
 
   def main_menu
+    pastel = Pastel.new
+
     puts ""
-    puts "Main Menu"
+    puts pastel.green("MAIN MENU")
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     puts "View my schedule. (1)"
     puts "Add a course to your schedule. (2)"
     puts "View all courses offered for your grade level. (3)"
@@ -108,37 +119,28 @@ class CommandLineInterface
   end
 
   def all_courses
+
     courses = Subject.all.map {|subject| subject.name}.sort.join(", ")
-    puts "Here is a comprehensive list of all our courses: #{courses}"
+    pastel_courses = @pastel.decorate(courses, :red, :on_black, :bold)
+    puts "Here is a comprehensive list of all our courses: #{pastel_courses}"
     sleep(3)
     main_menu
   end
 
   def courses_for_your_grade
+    sub = Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}.sort.join(", ")
+    pastel = @pastel.decorate(sub, :red, :on_black, :bold)
     puts " "
-   if @user.grade.grade_level == 9
-     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
-     sleep (3)
-     main_menu
-   elsif @user.grade.grade_level == 10
-     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
-     sleep (3)
-     main_menu
-   elsif @user.grade.grade_level == 11
-     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
-     sleep (3)
-     main_menu
-   elsif @user.grade.grade_level == 12
-     puts Subject.all.where(grade_id: @user.grade_id).sort.map {|x| x.name}
-     sleep (3)
-     main_menu
-   end
+    sleep (3)
+    puts pastel
+    main_menu
   end
 
   def add_course_menu
     puts "Please enter the name of the course you want to add"
     name = gets.chomp
     Subject.create(name: name, grade_id: @user.grade_id)
+    sleep(3)
     puts "You have added #{name} to the master course list!"
     main_menu
   end
@@ -151,12 +153,14 @@ class CommandLineInterface
     user_input == find_sub
     sleep (1)
     @schedule << user_input
+    sleep(3)
     my_schedule
   end
 
   def my_schedule
     puts "Here are the following courses in your schedule:"
-    puts @schedule
+    string = @schedule.join (", ")
+    puts @pastel.decorate(string, :red, :on_black, :bold)
     main_menu
   end
 
@@ -166,8 +170,9 @@ class CommandLineInterface
     subject2 = Subject.all.find{|x| x.name == course1}
     mats = subject2.materials
     name = mats.map {|x| x.name}.join(", ")
-    puts "Here are the materials required for #{course1}: #{name}"
-    sleep(2)
+    pastel = @pastel.decorate(name, :magenta, :on_black, :bold)
+    puts "Here are the materials required for #{course1}: #{pastel}"
+    sleep(3)
     main_menu
   end
 
@@ -189,7 +194,8 @@ class CommandLineInterface
       course = gets.chomp
       puts "Here are all of the materials currently required for #{course}:"
       mats = Subject.all.find {|x| x.name == course}.materials.map {|x| x.name}.join(", ")
-      puts mats
+      pastel = @pastel.decorate(mats, :magenta, :on_black, :bold)
+      puts pastel
       sleep(1)
       puts "Please enter the name of the material you would like to delete for #{course}:"
       mat_name = gets.chomp
