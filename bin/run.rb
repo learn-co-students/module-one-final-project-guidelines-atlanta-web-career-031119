@@ -11,18 +11,18 @@ class CommandLineInterface
 
   def welcome
     font = TTY::Font.new(:standard)
-    interpolated = font.write("Conquer College")
+    interpolated = font.write("School Scheduler")
 
     puts "WELCOME TO"
-    # sleep(2)
+    sleep(2)
     puts interpolated
-    # sleep(3)
+    sleep(3)
 
-    puts "Teachers often provide a list of suggested school supplies you'll need for their class."
-    # sleep(2)
+    puts "Be prepared for your first day of classes!"
+    sleep(2)
 
-    puts "Here at Conquer College, find out what supplies you'll actually need based from actual students."
-    # sleep(2)
+    puts "Use School Scheduler to add classes to your schedule, find materials needed for your classes, and more!"
+    sleep(2)
 
     puts "Would you like to continue? Yes or No"
 
@@ -59,7 +59,8 @@ class CommandLineInterface
       @user = User.find_or_create_by(name: name, age: age, grade_id: found_grade_twelve.id)
       main_menu
     else
-      puts "please enter your grade"
+      puts "Sorry, that is not a valid grade. Please start over."
+     user_login
     end
   end
 
@@ -144,31 +145,13 @@ class CommandLineInterface
 
   def add_course_to_schedule
     puts "Please choose a course to add to your schedule from the following options:"
-    if @user.grade.grade_level == 9
-      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
-      sleep (1)
-      user_input = gets.chomp
-      @schedule << user_input
-      my_schedule
-    elsif @user.grade.grade_level == 10
-      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
-      sleep (1)
-      user_input = gets.chomp
-      @schedule << user_input
-      my_schedule
-    elsif @user.grade.grade_level == 11
-      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
-      sleep (1)
-      user_input = gets.chomp
-      @schedule << user_input
-      my_schedule
-    elsif @user.grade.grade_level == 12
-      puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
-      sleep (1)
-      user_input = gets.chomp
-      @schedule << user_input
-      my_schedule
-    end
+    puts Subject.all.where(grade_id: @user.grade.id).sort.map {|x| x.name}
+    user_input = gets.chomp
+    find_sub = Subject.all.find_by(name: user_input).name
+    user_input == find_sub
+    sleep (1)
+    @schedule << user_input
+    my_schedule
   end
 
   def my_schedule
@@ -202,7 +185,6 @@ class CommandLineInterface
       puts "Thanks for adding #{name.downcase} as a material required for #{course}."
       main_menu
     elsif user_input == "delete" || user_input == "Delete"
-      # binding.pry
       puts "Please enter the subject to delete the material from:"
       course = gets.chomp
       puts "Here are all of the materials currently required for #{course}:"
@@ -216,16 +198,19 @@ class CommandLineInterface
     end
   end
 
-  def materials_for_grade #fix this method
+  def materials_for_grade
     puts "Which grade?"
+    puts "Please enter one: 9   10   11   12"
     grade = gets.chomp.to_i
     list_of_materials = Grade.all.find{|x| x.grade_level == grade}.subjects.map {|x| x.materials}.flatten.map {|x| x.name}.sort.join(", ")
-    puts "The Materials for grade #{grade} are: #{list_of_materials}"
+    puts "The Materials for grade #{grade} are:"
+    puts "#{list_of_materials}"
     main_menu
   end
 
   def all_users_in_x_grade
     puts "Which grade?"
+    puts "Please enter one: 9   10   11   12"
     grade = gets.chomp.to_i
     users =  Grade.all.find {|x| x.grade_level == grade}.users.map {|x| x.name}.join (", ")
     puts "The Users for grade #{grade} are: #{users}"
