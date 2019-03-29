@@ -187,19 +187,21 @@ class CommandLineInterface
       course = gets.chomp
       match = Subject.all.find {|x| x.name == course}
       @material = Material.find_or_create_by(name: name, subject_id: match.id)
-      puts "Thanks for adding #{name.downcase} as a material required for #{course}."
+      pastel = @pastel.decorate(name, :magenta, :on_black, :bold)
+      puts "Thanks for adding #{pastel.downcase} as a material required for #{course}."
       main_menu
     elsif user_input == "delete" || user_input == "Delete"
       puts "Please enter the subject to delete the material from:"
       course = gets.chomp
       puts "Here are all of the materials currently required for #{course}:"
       mats = Subject.all.find {|x| x.name == course}.materials.map {|x| x.name}.join(", ")
-      pastel = @pastel.decorate(mats, :magenta, :on_black, :bold)
-      puts pastel
+      puts mats
       sleep(1)
       puts "Please enter the name of the material you would like to delete for #{course}:"
       mat_name = gets.chomp
-      Material.destroy(Subject.all.find {|x| x.name == course}.materials.where(name: mat_name)[0])
+      current_mats = Subject.all.find {|x| x.name == course}.materials
+      selected_mat = current_mats.where(name: mat_name)[0]
+      Material.destroy(selected_mat.id)
       main_menu
     end
   end
