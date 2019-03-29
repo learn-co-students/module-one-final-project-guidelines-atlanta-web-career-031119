@@ -69,7 +69,7 @@ def check_responses(response)
 end
 
 def go_back_menu
-    puts "\n(Type 'Q' to exit or 'M' for main menu)"
+    puts "\n (Type 'Q' to exit or 'M' for main menu)"
 end
 
 def check_user_name(response)
@@ -395,6 +395,7 @@ def view_database(current_user)
                 movie_search(current_user)
             end
             MovieWatchlist.create(user_id: current_user.id, movie_id: Movie.all[response-1].id, rating: 0.0, review: "Has not been reviewed by you yet.", watched: false, keep_in_list: true)
+            puts
             puts "* Movie '#{Movie.all[response-1].title}' was added to your watchlist! We'll be sure to keep an eye on it for you. *\n (Press Enter to continue)"
             gets
             movie_search(current_user)
@@ -509,11 +510,11 @@ def view_watchlist(current_user)
         if index > 99
             puts " #{ index + 1 })\t #{ movie_list[index].movie.title }"
         end
-        if index > 10
-            puts "  #{ index + 1 })\t #{ movie_list[index].movie.title }"
+        if index > 9
+            puts " #{ index + 1 })\t #{ movie_list[index].movie.title }"
         end
         if index < 10
-            puts "   #{ index + 1 })\t #{ movie_list[index].movie.title }"
+            puts " #{ index + 1 })\t #{ movie_list[index].movie.title }"
         end
     end
     watchlist_menu(current_user, movie_list)
@@ -525,7 +526,7 @@ def watchlist_menu(current_user, movie_list)
     puts
     puts " 1) Check movie info"
     puts " 2) Watch a movie on the list"
-    puts " 3) Remove movie from list"
+    puts " 3) Remove a movie from list"
     puts " 4) View/Update your movie ratings/reviews"
     puts
     go_back_menu
@@ -722,9 +723,9 @@ def update_user_rating_review(current_user, movie_list)
 end
 
 def watchmovies(current_user, movie_title)
-    Launcy.open("https://www.vudu.com/content/movies/search?minVisible=0&returnUrl=%252F&searchString=#{movie_title}")
+    Launchy.open("https://www.vudu.com/content/movies/search?minVisible=0&returnUrl=%252F&searchString=#{movie_title}")
     # Launchy.open("https://ww1.putlockerfree.sc/search-query/#{moviesname}/")
-    user_menu(current_user)
+    view_watchlist(current_user)
 end
 
 def mostpopularmovie
@@ -732,8 +733,7 @@ def mostpopularmovie
     y = x.sort_by{|k,v| -v}.first
     y[0]
     z = Movie.where(id: y[0])
-    puts "* The most popular media  ~  #{z[0].title}"
-    #binding.pry  
+    puts "* The most popular film  ~  #{z[0].title}"
 end
 
 def mostwatchmovie
@@ -748,7 +748,7 @@ def mostwatchmovie
     end   
     x = hash.sort_by{|keys,values| -values}.first
     y = Movie.where("id = #{x[0]}").pluck(:title)
-    puts "* The most viewed media  ~  #{y[0]}"
+    puts "* The most viewed film  ~  #{y[0]}"
 end
 
 def highestuserrating
@@ -757,7 +757,7 @@ def highestuserrating
     #puts y[0]
     i = 0
     while i < y.length
-        puts "* The media with the highest user rating  ~  #{y[i].movie.title}\n \tAt an average rating of ~ #{y[i].rating}"
+        puts "* The film with the highest user rating  ~  #{y[i].movie.title}\n \tAt an average rating of ~ #{y[i].rating}"
         i +=1
     end
 end
@@ -768,7 +768,7 @@ def highestrating
     #puts y[0]
     i = 0
     while i < y.length
-        puts "* The media with the highest rating  ~  #{y[i].title}\n \tAt an average rating of ~ #{y[i].rating}"
+        puts "* The film with the highest rating  ~  #{y[i].title}\n \tAt an average rating of ~ #{y[i].rating}"
         i +=1
     end
 end
@@ -777,7 +777,7 @@ def usermaxmovies
     x = MovieWatchlist.all.group(:user_id).count
     y = x.sort_by{|key,values| -values}.first
     z = User.where("id = #{y[0]}").pluck(:name)
-    puts "* The user with the highest number of movies is  ~  #{z.join}"
+    puts "* The user with the highest number of films is  ~  #{z.join}"
     # binding.pry
 end
 
