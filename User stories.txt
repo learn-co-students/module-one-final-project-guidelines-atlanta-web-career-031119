@@ -1,0 +1,27 @@
+*** User Stories ***
+
+1) As a user, I want to be able to enter my name and have a profile that saves my data
+2) As a user, I want the ability to search for movies using their title
+3) As a user, I should be able to create/save/delete data on my profile
+4) As a user, I should have the ability to see what other users have also searched for and reviewed
+5) As a user, my data should persist (reviews and ratings) should I decide to delete my profile
+
+* User stories to complete in the future *
+
+6)  As a user, I would like to have movies suggested to me based on the movies I tend to track/watch
+7)  As a user, I want upcoming releases (including indie films) that fit my taste suggested to me
+    along with their release date so I can plan ahead
+8)  As a user, I would like to be able to track actors/actresses and be notified of projects they are
+    currently working on/involved in (including indie projects)
+9)  As a user, I want the ability to track more than just movies. Things like books & authors, video games,      and animations/anime
+10) As a user, I definitely want a GUI that is clean and sleek, has a dark mode and a plethora of other          useful options to allow me to configure the app to work the way that I want (things like themes)
+11) As a user, I would like to have the ability to interact with other users in some capacity
+
+
+** Things I've learned while working on this project **
+
+1)  The Craftsmen's Curse - The ability to always see that there is room for improvement regardless of the state your app is in.
+
+2)  Working in a team can be incredibly hard due to different programming styles, having to conform to one style can be difficult.
+
+3)  Databases are actually not that bad if you have the right tools to manage it, and... a lot of luck to not break everything and lose important data.

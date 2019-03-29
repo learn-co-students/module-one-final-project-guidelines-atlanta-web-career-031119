@@ -25,11 +25,10 @@ def login
     puts "========================================"
     puts "   Where we watch your films for you!"
     puts
-    main_menu
+    login_menu
 end
 
-def main_menu
-    menu = "main"
+def login_menu
     puts "Are you a new or existing user?"
     puts
     puts " 1) Existing user"
@@ -41,7 +40,7 @@ def main_menu
     puts
     print "=> "
     response = gets.chomp
-    check_responses(response, menu)
+    check_responses(response)
     if response == '1' and User.all.size != 0
         logging_in_user
     elsif response == '1' and User.all.size == 0
@@ -53,31 +52,24 @@ def main_menu
     elsif response == '3'
         view_movie_statistics
     else
-        menu_banner("Main Menu")
-        main_menu
+        menu_banner("Login Menu")
+        login_menu
     end
 end
 
-def check_responses(response, menu)
+def check_responses(response)
     response = response.downcase
     if response == 'q' or response == 'quit' or response == 'exit'
         clear_screen
         exit
     end
-    if menu == 'profile' or menu == 'logging in' or menu == "user" or menu == 'search'
-        if response == 'm' or response == 'main' or response == 'main menu'
-            menu_banner("Main Menu")
-            main_menu
-        end
-    end
+    # if response == 'm' or response == 'main' or response == 'main menu'
+    #     user_menu(current_user)
+    # end
 end
 
 def go_back_menu
-    puts "\n(Type 'Q' to exit or 'M' to go back to the main menu)"
-end
-
-def go_back_user_menu
-    puts "\n(Type 'Q' to quit, 'M' for main menu, or 'U' for your user menu)\n"
+    puts "\n(Type 'Q' to exit or 'M' for main menu)"
 end
 
 def check_user_name(response)
@@ -91,65 +83,65 @@ end
 
 def create_profile
     menu_banner("Profile Creation")
-    menu = "profile"
     create_new = false
-    puts "Create a new user profile. A name is required.\nIt must be between 6 and 16 characters long."
-    go_back_menu
+    puts " Create a new user profile. A name is required.\n It must be between 6 and 16 characters long."
+    puts
+    puts " (Type 'Q' to quit)"
     puts
     print "=> "
     response = gets.chomp
-    check_responses(response, menu)
+    check_responses(response)
     if response.length < 6 or response.length > 16
-        puts "\n* Error: User name must be between 6 and 16 characters long. *\n (Press Enter to continue)"
+        puts "\n* Error: User name must be between 6 and 16 characters long. *\n (Press Enter to continue...)"
         gets
         create_profile
     end
     if User.all.size == 0
         User.create(name: response, hidden: false)
-        puts "\nNew user was created: #{ response }\n (Press Enter to continue)"
+        puts "\n* New user was created: #{ response }\n (Press Enter to continue...)"
         gets
-        menu_banner("Main Menu")
-        main_menu
+        current_user = User.find(User.where(name: response).ids)[0]
+        user_menu(current_user)
     end
     if User.all.size != 0
         create_new = check_user_name(response)
         if create_new != false
-            puts "\n* Error: User name is already in use. Please try another name. *\n (Press Enter to continue)"
+            puts "\n* Error: User name is already in use. Please try another name. *\n (Press Enter to continue...)"
             gets
             create_profile
         end
     end
     if create_new == false
         User.create(name: response, hidden: false)
-        puts "\nNew user was created: #{ response }\n (Press Enter to continue)"
+        puts "\n* New user was created: #{ response }\n (Press Enter to continue...)"
         gets
-        menu_banner("Main Menu")
-        main_menu
+        current_user = User.find(User.where(name: response).ids)[0]
+        user_menu(current_user)
     end
-    menu_banner("Main Menu")
-    main_menu
+    menu_banner("Login Menu")
+    login_menu
 end
 
 def logging_in_user
-    menu = "logging in"
     menu_banner("User Login")
     puts "   List of current Users:"
     puts "----------------------------"
     puts
     User.all.each do |user|
         if user.hidden == false
-            puts "#ID: #{ user.id } \t-  Name: #{ user.name }"
+            puts "#ID: #{ user.id }\t -  Name: #{ user.name }"
         end
     end
-    puts "\nEnter either user name or user #ID to login."
-    go_back_menu
+    puts "\n* Enter either user name or user #ID to login."
+    puts
+    puts " (Type 'Q' to exit)"
     print "\n => "
     response = gets.chomp
-    check_responses(response, menu)
+    check_responses(response)
     if response.to_i != 0
         check_id = response.to_i
         User.all.each do |user|
-            if user.id == check_id
+            if user.id == check_id and user.hidden == false
                 current_user = User.find(check_id)
                 user_menu(current_user)
             end
@@ -160,7 +152,7 @@ def logging_in_user
         current_user = User.find(User.where(name: user_name).ids)[0]
         user_menu(current_user)
     else
-        puts "\n* That is an invalid user. Please try\nagain or create a new user profile. *\n (Press Enter to continue)"
+        puts "\n* That is an invalid user. Please try\n   again or create a new user profile. *\n (Press Enter to continue)"
         gets
         logging_in_user
     end
@@ -168,32 +160,29 @@ end
 
 def user_menu(current_user)
     menu_banner(current_user.name)
-    menu = "user"
     puts " 1) View your movie list"
     puts " 2) Search for movies"
-    puts " 3) Watch a movie (opens web browser!)"
-    puts " 4) Change user name"
-    puts " 5) Switch user"
+    puts
+    puts " 7) Change user name"
+    puts " 8) Switch user"
     puts
     puts " 0) Delete profile (Warning!!!)"
-    go_back_menu
+    puts 
+    puts " (Type 'Q' to quit)"
     puts
     print " => "
     response = gets.chomp
-    check_responses(response, menu)
+    check_responses(response)
     if response == '1'
         view_watchlist(current_user)
     elsif response == '2'
         movie_search(current_user)
-    elsif response == '5'
+    elsif response == '8'
         logging_in_user
     elsif response == '0'
         delete_profile(current_user)
-    elsif response == '4'
+    elsif response == '7'
         change_user_name(current_user)
-    elsif response == '3'
-        watchmovies
-        user_menu(current_user)
     else
         user_menu(current_user)
     end
@@ -201,14 +190,20 @@ end
 
 def change_user_name(current_user)
     menu_banner(current_user.name)
-    puts "Current user name for this profile is: #{current_user.name}"
-    puts "Name must be bewtween 6 and 16 characters in length."
+    puts " Current user name for this profile is: #{current_user.name}"
+    puts " Name must be bewtween 6 and 16 characters in length."
     puts
-    puts "What would you like your new user name be?"
+    puts " What would you like your new user name be?\n (Or you can leave to field blank for no change)"
     go_back_menu
+    puts
     print " => "
     response = gets.chomp
-    check_responses(response, "user")
+    check_responses(response)
+    if response.size == 0 or response = ''
+        user_menu(current_user)
+    elsif response == 'm' or response == 'main' or response == 'main menu'
+        user_menu(current_user)
+    end
     if response.length < 6 or response.length > 16
         puts "\n* Name is not the correct length. Must be be 6-16 characters long. *\n (Press Enter to continue)"
         gets
@@ -231,7 +226,7 @@ def change_user_name(current_user)
         # gets
         # change_user_name(current_user)
     elsif existing != false
-        puts "\n* Sorry, that name is already in use by another user.\nPlease choose another name. *\n (Press Enter to continue)"
+        puts "\n* Sorry, that name is already in use by another user.\n   Please choose another name. *\n (Press Enter to continue...)"
         gets
         change_user_name(current_user)
     end
@@ -239,7 +234,8 @@ end
 
 def delete_profile(current_user)
     menu_banner(current_user.name)
-    puts "**! Deleting this profile will delete all associated data\n    and watchlists! Are you sure you want to do this? !**\n\n(Type out the name of the profile to delete it, or anything else to go back)\n"
+    puts "**! Deleting this profile will delete all associated data\n    and watchlists! Are you sure you want to do this? !**\n\n (Type out the name of the profile to delete it, or anything else to go back)"
+    puts
     print " !? "
     response = gets.chomp
     yes_no = check_user_name(response)
@@ -251,7 +247,7 @@ def delete_profile(current_user)
         # User.destroy(User.where(id: current_user.id))
         puts "User #{yes_no} was removed!\n (Press Enter to continue)"
         gets
-        logging_in_user
+        login
     end
     user_menu(current_user)
 end
@@ -260,15 +256,16 @@ def movie_search(current_user)
     menu_banner("Search Menu")
     puts " Searching for Movies!\n\n You can search for movies by title to get information about them.\n"
     puts
-    puts " 1) Feeling Lucky! search     (returns the first closest match)"
-    puts " 2) Broad search              (returns a number of movies with the title in the name)"
-    puts " 3) View the current database (returns a list of movies that all users have saved)"
+    puts " 1) Feeling Lucky! search      (returns the first closest match)"
+    puts " 2) Top ten hits search        (returns up to ten movies with the title in the name)"
+    puts " 3) View the current database  (returns a list of movies that all users have saved)"
     puts " 4) View other user's reviews"
-    go_back_user_menu
+    go_back_menu
+    puts
     print " => "
     response = gets.chomp.downcase
-    check_responses(response, "user")
-    if response == 'user_menu' or response == 'user' or response == 'u'
+    check_responses(response)
+    if response == 'm' or response == 'main' or response == 'main menu'
         user_menu(current_user)
     elsif response == '1'
         lucky_search(current_user)
@@ -285,17 +282,17 @@ end
 
 def broad_search(current_user)
     menu_banner("Broad Search")
-    puts "Enter the name of a movie that you would like to find:\n"
-    go_back_user_menu
+    puts " Enter the name of a movie that you would like to find:\n"
+    go_back_menu
     print " => "
     response = gets.chomp.downcase
-    check_responses(response, 'search')
-    if response == 'user_menu' or response == 'u'
+    check_responses(response)
+    if response == 'm' or response == 'main' or response == 'main menu'
         user_menu(current_user)
     end
     movie_info = JSON.parse(RestClient.get("http://www.omdbapi.com/?s=#{response}&apikey=92d4118f&"))
     if movie_info.keys.include?("Error")
-        puts "Uh oh, we didn't find that movie. Try checking the spelling and search again.\n (Press Enter to continue...)"
+        puts "* Uh oh, we didn't find any results for that movie. Try checking the spelling and search again.\n (Press Enter to continue...)"
         gets
         broad_search(current_user)
     end
@@ -312,7 +309,7 @@ def broad_search(current_user)
         check = Movie.where(title: movie_info2[index]["Title"], release_date: movie_info2[index]["Released"])
         if check.size == 0
             add_movie_to_database(movie_info2[index])
-            puts "New movie detected! Automatically added to the database!"
+            puts "* New movie detected! Automatically added to the database! *"
         end
     end
     id_nums = []
@@ -321,7 +318,7 @@ def broad_search(current_user)
     end
     info = Movie.find(id_nums)
     menu_banner("Search Results")
-    puts "Here are your search results:"
+    puts " Here are your search results:"
     for index in 0...info.size
         if info[index].title == nil
             next
@@ -329,15 +326,15 @@ def broad_search(current_user)
         puts " --- ##{index+1} ---"
         display_movie_info(info[index])
     end
-    puts " Type in the number of the search result you\n would like to add to your watchlist:"
+    puts "* Type in the number of the search result you\n  would like to add to your watchlist:"
     puts
-    go_back_user_menu
+    go_back_menu
     puts
     while true
         print " => "
         response = gets.chomp.downcase
-        check_responses(response, 'search')
-        if response == 'user_menu' or response == 'user' or response == 'u'
+        check_responses(response)
+        if response == 'm' or response == 'main' or response == 'main menu'
             user_menu(current_user)
         end
         response = response.to_i
@@ -354,7 +351,7 @@ def broad_search(current_user)
                 movie_search(current_user)
             end
             MovieWatchlist.create(user_id: current_user.id, movie_id: info[response-1].id, rating: 0.0, review: "Has not been reviewed by you yet.", watched: false, keep_in_list: true)
-            puts "* Movie '#{info[response-1].title}' was added to your watchlist! We'll be sure to keep an eye on it for you. *\n (Press Enter to continue)"
+            puts "* Movie '#{info[response-1].title}' was added to your watchlist! We'll be sure to keep an eye on it for you. *\n (Press Enter to continue...)"
             gets
             movie_search(current_user)
         end
@@ -375,13 +372,13 @@ def view_database(current_user)
         display_movie_info(Movie.all[index])
     end
     puts " Type in the number of the search result if you\n would like to add it to your watchlist:"
-    go_back_user_menu
+    go_back_menu
     puts
     while true
         print " => "
         response = gets.chomp.downcase
-        check_responses(response, 'search')
-        if response == 'user_menu' or response == 'user' or response == 'u'
+        check_responses(response)
+        if response == 'm' or response == 'main' or response == 'main menu'
             user_menu(current_user)
         end
         response = response.to_i
@@ -431,23 +428,24 @@ end
 def lucky_search(current_user)
     menu_banner("Feeling Lucky!")
     puts "Enter the name of the movie you would like to find:\n"
-    go_back_user_menu
+    go_back_menu
+    puts
     print " => "
     response = gets.chomp.downcase
-    check_responses(response, 'search')
-    if response == 'user_menu' or response == 'u'
+    check_responses(response)
+    if response == 'm' or response == 'main' or response == 'main menu'
         user_menu(current_user)
     end
     movie_info = JSON.parse(RestClient.get("http://www.omdbapi.com/?t=#{response}&apikey=92d4118f&"))
     if movie_info.keys.include?("Error")
-        puts "Uh oh, we didn't find that movie. Try checking the spelling and search again.\n (Press Enter to continue...)"
+        puts "* Uh oh, we didn't find that movie. Try checking the spelling and search again.\n (Press Enter to continue...)"
         gets
         lucky_search(current_user)
     end
     check = Movie.where(title: movie_info["Title"], release_date: movie_info["Released"])
     if check.size == 0
         add_movie_to_database(movie_info)
-        puts "* New movie detected! Automatically added to the database! *\n (Press Enter to continue)"
+        puts "* New movie detected! Automatically added to the database! *\n (Press Enter to continue...)"
         gets
     end
     id_num = Movie.where(title: movie_info["Title"], release_date: movie_info["Released"]).ids[0]
@@ -455,12 +453,12 @@ def lucky_search(current_user)
     while true
         menu_banner("Movie Info")
         display_movie_info(info)
-        puts "Would you like to add this movie to your watchlist?\n(1 or 'Y' for yes, 2 or 'N' for no)"
+        puts " Would you like to add this movie to your watchlist?\n(1 or 'Y' for yes, 2 or 'N' for no)"
         puts
         print " => "
         response = gets.chomp.downcase
-        check_responses(response, 'search')
-        if response == 'user_menu' or response == 'user' or response == 'u'
+        check_responses(response)
+        if response == 'm' or response == 'main' or response == 'main menu'
             user_menu(current_user)
         end
         if response == '1' or response == 'y' or response == 'yes'
@@ -505,7 +503,7 @@ def view_watchlist(current_user)
         gets
         user_menu(current_user)
     end
-    puts "Your current list:"
+    puts " Your current list:"
     puts
     for index in 0...movie_list.size
         if index > 99
@@ -526,23 +524,26 @@ def watchlist_menu(current_user, movie_list)
     puts "* What would you like to do?"
     puts
     puts " 1) Check movie info"
-    puts " 2) Remove movie from list"
-    puts " 3) View/Update your movie ratings/reviews"
+    puts " 2) Watch a movie on the list"
+    puts " 3) Remove movie from list"
+    puts " 4) View/Update your movie ratings/reviews"
     puts
-    go_back_user_menu
+    go_back_menu
     puts
     print " => "
     response = gets.chomp.downcase
-    check_responses(response, "user")
-    if response == 'user_menu' or response == 'user' or response == 'u'
+    check_responses(response)
+    if response == 'm' or response == 'main' or response == 'main menu'
         user_menu(current_user)
     end
     if response == '1'
         user_movie_info(current_user, movie_list)
-    elsif response == '2'
-        remove_movie_from_user_list(current_user, movie_list)
     elsif response == '3'
+        remove_movie_from_user_list(current_user, movie_list)
+    elsif response == '4'
         update_user_rating_review(current_user, movie_list)
+    elsif response == '2'
+        user_movie_watch(current_user, movie_list)
     else
         view_watchlist(current_user)
     end
@@ -564,12 +565,35 @@ def view_users_reviews(current_user)
     movie_search(current_user)
 end
 
-def user_movie_info(current_user, movie_list)
-    puts "Put in the number of the movie in the list that\nyou would like to view the information for:\n(1 - #{movie_list.size})"
+def user_movie_watch(current_user, movie_list)
+    puts
+    puts "* Put in the number of the movie in the list\n  that you would like to watch (1 - #{movie_list.size}):"
+    go_back_menu
+    puts
     while true
         print " => "
         response = gets.chomp.downcase
-        check_responses(response, 'user')
+        check_responses(response)
+        if response == 'm' or response == 'main' or response == 'main menu'
+            user_menu(current_user)
+        end
+        response = response.to_i
+        if response != 0 and response <= movie_list.size and response > 0
+            watchmovies(current_user, movie_list[response-1].movie.title)
+        else
+            puts "* Please enter a number for a movie on the list. *\n(Press Enter to continue)"
+            gets
+            next
+        end
+    end
+end
+
+def user_movie_info(current_user, movie_list)
+    puts " Put in the number of the movie in the list that\n you would like to view the information for:\n(1 - #{movie_list.size})"
+    while true
+        print " => "
+        response = gets.chomp.downcase
+        check_responses(response)
         response = response.to_i
         if response != 0 and response <= movie_list.size and response > 0
             menu_banner("Movie Info")
@@ -590,15 +614,15 @@ end
 
 def remove_movie_from_user_list(current_user, movie_list)
     puts
-    puts "Which movie would you like to remove from your watchlist? (1 - #{movie_list.size})"
+    puts " Which movie would you like to remove from your watchlist? (1 - #{movie_list.size})"
     puts
-    go_back_user_menu
+    go_back_menu
     while true
         puts
         print " => "
         response = gets.chomp
-        check_responses(response, 'user')
-        if response == 'user_menu' or response == 'user' or response == 'u'
+        check_responses(response)
+        if response == 'm' or response == 'main' or response == 'main menu'
             user_menu(current_user)
         end
         response = response.to_i
@@ -640,13 +664,13 @@ def update_user_rating_review(current_user, movie_list)
         puts "            Your review: #{movie_list[index].review.capitalize}"
         puts 
     end
-    puts "Enter the number for the movie you wish to update:"
-    go_back_user_menu
+    puts " Enter the number for the movie you wish to update:"
+    go_back_menu
     puts
     print " => "
     response = gets.chomp.downcase
-    check_responses(response, 'user')
-    if response == 'user_menu' or response == 'user' or response == 'u'
+    check_responses(response)
+    if response == 'm' or response == 'main' or response == 'main menu'
         user_menu(current_user)
     end
     response = response.to_i
@@ -658,7 +682,7 @@ def update_user_rating_review(current_user, movie_list)
             puts
             print " => "
             rating = gets.chomp.downcase
-            if rating == 'user_menu' or rating == 'user' or rating == 'u'
+            if rating == 'main menu' or rating == 'main' or rating == 'm'
                 user_menu(current_user)
             end
             check_responses(rating, 'user')
@@ -676,7 +700,7 @@ def update_user_rating_review(current_user, movie_list)
             print " => "
             review = gets.chomp.downcase
             check_responses(review, 'user')
-            if review == 'user_menu' or review == 'user' or review == 'u'
+            if review == 'main menu' or review == 'main' or review == 'm'
                 user_menu(current_user)
             end
             if review.length == 0 or review == ''
@@ -697,8 +721,10 @@ def update_user_rating_review(current_user, movie_list)
     end
 end
 
-def watchmovies
-    Launchy.open("https://ww1.putlockerfree.sc/search-query/")
+def watchmovies(current_user, movie_title)
+    Launcy.open("https://www.vudu.com/content/movies/search?minVisible=0&returnUrl=%252F&searchString=#{movie_title}")
+    # Launchy.open("https://ww1.putlockerfree.sc/search-query/#{moviesname}/")
+    user_menu(current_user)
 end
 
 def mostpopularmovie
