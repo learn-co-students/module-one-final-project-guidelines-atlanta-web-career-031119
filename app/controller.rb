@@ -1,4 +1,5 @@
 require 'tty-prompt'
+require 'tty-font'
 require 'pry'
 require_relative '../config/environment'
 require_relative './models/user'
@@ -21,8 +22,10 @@ class TicTalkApp
   end
 
   def self.welcome_message
+    font = TTY::Font.new(:straight)
+    color = Pastel.new
     system "clear"
-    puts "Welcome to TicTalk"
+    puts color.yellow(font.write("Welcome to TicTalk"))
     find_out_who
   end
 
@@ -52,9 +55,6 @@ class TicTalkApp
     elsif
       choice == "My Past Events"
       past_events
-    #elsif
-    #  choice == "Dashboard"
-    #  dashboard
     elsif
       choice == "Logout"
       self.logout
@@ -85,14 +85,14 @@ class TicTalkApp
   end
 
   def self.by_date
-    entry = @@prompt.ask("Please enter the date you want to look for: (YYYY-MM-DD)")
+    entry = @@prompt.ask("Please enter the date you want to look for (YYYY-MM-DD):")
     list = Event.where('date = ?', entry)
-    if list == []
+    list2= list.select {|event| event.date > DateTime.now.to_s[0..9] }
+    if list2 == []
       puts "Sorry no events on this day. Choose again."
       self.by_date
     else
-    #choices = list.map{|x| x.name}
-    choices = list.map do |event|
+    choices = list2.map do |event|
      x = {}
      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
@@ -107,12 +107,12 @@ class TicTalkApp
   def self.by_location
     entry = @@prompt.ask("Please enter the city you want to search:")
     list = Event.where('location = ?', entry)
-    if list == []
+    list2= list.select {|event| event.date > DateTime.now.to_s[0..9] }
+    if list2 == []
       puts "Sorry no events in this location. Choose again."
       self.by_location
     else
-    #choices = list.map{|x| x.name}
-    choices = list.map do |event|
+    choices = list2.map do |event|
      x = {}
      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
@@ -128,8 +128,8 @@ class TicTalkApp
     list = Event.all.map { |x| x.venue  }
     entry = @@prompt.select("Please select from the following venues:", list.uniq)
     events = Event.where('venue = ?', entry)
-    #choices = events.map{|x| x.name}
-    choices = events.map do |event|
+    list2= events.select {|event| event.date > DateTime.now.to_s[0..9] }
+    choices = list2.map do |event|
      x = {}
      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
@@ -144,8 +144,8 @@ class TicTalkApp
     list = Event.all.map { |x| x.genre  }
     entry = @@prompt.select("Please select from the following genres:", list.uniq)
     events = Event.where('genre = ?', entry)
-    #choices = events.map{|x| x.name}
-    choices = events.map do |event|
+    list2= events.select {|event| event.date > DateTime.now.to_s[0..9] }
+    choices = list2.map do |event|
      x = {}
      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
@@ -160,9 +160,8 @@ class TicTalkApp
     list = Event.all.map { |x| x.name  }
     entry = @@prompt.select("Please select from the following events:", list.uniq)
     events = Event.where('name = ?', entry)
-
-    #choices = events.map{|x| x.name}
-    choices = events.map do |event|
+    list2= events.select {|event| event.date > DateTime.now.to_s[0..9] }
+    choices = list2.map do |event|
      x = {}
      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
      x[:value] = event.id
@@ -200,7 +199,6 @@ class TicTalkApp
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
 
     my_upcoming_events = my_bought_events.uniq.select {|event| event.date > DateTime.now.to_s[0..9] }
-    #my_upcoming_list = my_upcoming_events.map {|event| event.name }
     my_upcoming_list = my_upcoming_events.map do |event|
      x = {}
      x[:name] = event.name
