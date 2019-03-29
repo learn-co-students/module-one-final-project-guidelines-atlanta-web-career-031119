@@ -50,29 +50,25 @@ end
 
 def user_login
     prompt = TTY::Prompt.new
-    @pastel = Pastel.new
+    pastel = Pastel.new
     result = prompt.ask("What is your name?") do |q|
         q.required true
         q.validate /\A\w+\Z/
         q.modify   :capitalize
       end
       if User.exists?(['name LIKE ?', "%#{result}%"])
-       puts @pastel.command(@straight.write("Welcome  back, #{result}!"))
-       return User.find_by_name(result)
-      end
-    end
-
-def create_account
-    yes_or_no = ("Would you like to create an account?")
+        user = User.find_by_name(result)
+        enter_password(user)
+        puts "Welcome back, #{result}!"
+        return user
+      else
+        puts "Hmmm, I don't see that name..."
+        yes_or_no = prompt.yes?("Would you like to create an account?")
         if yes_or_no == true
-            new_user = User.create(name: result)
-            puts "Welcome to Cryptid Hunter " + @pastel.red("#{result}!")
-            new_user.location = prompt.ask("What city do you live in?")
-            new_user.bio = prompt.ask("Tell us a little about yourself!")
-            new_user.save
-            return new_user
+            create_user(result)
         end
     end
+end
 
 def menu
     pastel = Pastel.new

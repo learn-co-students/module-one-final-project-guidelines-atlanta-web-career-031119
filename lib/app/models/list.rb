@@ -26,7 +26,7 @@ module List
         if user.monsters != nil
             user_rank(user)
         end
-        puts "Rank: #{user.rank}"
+        puts "Rank: " + @pastel.cyan.bold("#{user.rank}")
         puts "Location: #{user.location}"
         puts "#{user.bio}"
         if user.monsters.length > 0

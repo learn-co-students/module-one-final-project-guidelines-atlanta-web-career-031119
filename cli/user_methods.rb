@@ -21,13 +21,14 @@ def search_users_by_name
     users.each do |user|
         choices << user
     end
+    choices = choices.sort
     prompt = TTY::Prompt.new
     prompt.select("Which user are you looking for?", choices)
 end
 
 def search_users_by_rank
     choices = []
-    user_by_rank = User.all.order(:rank)
+    user_by_rank = User.all.order('rank DESC')
     user_by_rank.each do |user|
         choices << user.name
     end
@@ -41,7 +42,7 @@ end
 
 def get_user_by_name(selection)
     user = User.find_by_name(selection)
-   print_profile(user)
+    print_profile(user)
 end
 
 
@@ -97,13 +98,45 @@ def update_bio
     sleep(1)
 end
 
+
 def user_rank(user)
     if user.monsters == nil || user.posts == nil
         user.rank = 0
     else
     monster_rank = user.monsters.map {|monster| monster.danger_rating }
     user_posts = user.posts.length
-    user.rank = monster_rank.inject(0){|sum, x| sum + x} + user_posts
+    user.update(rank: (monster_rank.inject(0){|sum, x| sum + x} + user_posts))
     end
+end
+
+def create_password(new_user)
+    new_user.password = @prompt.mask("Please enter a password", required: true)
+    password = @prompt.mask("Please enter password again", required: true)
+    if new_user.authenticate(password)
+    return
+    elsif new_user.authenticate(password) == false
+    puts "Password did not match"
+    create_password(new_user)
+    end
+end
+
+def enter_password(user)
+    password = @prompt.mask("Password:")
+    if user.authenticate(password) == true
+    end
+    if user.authenticate(password) == false
+    puts "incorrect password"
+    user_login
+    end
+end
+
+def create_user(result)
+    new_user = User.create(name: result, rank: 0)
+            puts "Welcome to Cryptid Hunter " + @pastel.red("#{result}!")
+            create_password(new_user)
+            new_user.location = @prompt.ask("What city do you live in?")
+            new_user.bio = @prompt.ask("Tell us a little about yourself!")
+            new_user.save
+            new_user
 end
 

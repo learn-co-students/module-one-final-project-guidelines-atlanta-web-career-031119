@@ -38,6 +38,7 @@ and interact with other users through comments. </p>
   <li>By User</li>
   <li>By Monster</li>
   <li>Most Recent</li>
+  <li>By Popularity</li>
   </ol>
 <li>Search for a monster</li>
 
@@ -45,7 +46,6 @@ and interact with other users through comments. </p>
   <ol>
       <li>By Name</li>
       <li>By Rank</li>
-      <li>By Popularity</li>
   </ol>
 <li>My profile</li>
 <li>Exit</li>

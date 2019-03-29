@@ -18,7 +18,7 @@ end
 def comments_for_user(user)
     posts = user.posts
     posts.each do |post|
-        puts "#{post.title}"
+        puts @pastel.bright_red.bold("#{post.title}")
         get_comments_for_post(post)
     end
 end
