@@ -12,3 +12,4 @@ gem "pastel"
 gem "tty-font"
 gem "tty-box"
 gem "awesome_print"
+gem 'bcrypt', '~> 3.1.7'

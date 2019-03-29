@@ -60,7 +60,10 @@ def create_new_monster(name)
     description = "No one has submitted a description of this cryptid yet."
     location = @prompt.ask(@pastel.command("Where did you see this cryptid?"))
     description = @prompt.ask(@pastel.command("Would you like to submit a description for this cryptid?"))
-    new_monster = Monster.create(name: name, location: location, description: description)
+    dr = @prompt.ask(@pastel.command("On a scale of 1-10 how dangerous is this creature?")) do |q|
+        q.in ('1-10')
+    end
+    new_monster = Monster.create(name: name.capitalize, location: location, description: description, danger_rating: dr)
     new_monster.save
     new_monster.name
 end
