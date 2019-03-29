@@ -201,7 +201,6 @@ class TicTalkApp
       end
     end
     selection = @@prompt.select("Select an Event for more details and to purchase a ticket", my_wish_list)
-
     self.display_event_from_wishlist(selection)
   end
 
@@ -277,9 +276,6 @@ class TicTalkApp
       main_menu
     end
   end
-
-  # def dashboard
-  # end
 
   def self.logout
     puts "Thanks for stopping by!"
@@ -373,7 +369,6 @@ class TicTalkApp
   end
 
   def self.delete_ticket(selection)
-
     Ticket.delete(selection)
     puts "We have cleared that out for you. What would you like next?"
     main_menu
@@ -390,7 +385,6 @@ class TicTalkApp
 
   def self.view_comments(event)
     comment_list = Review.where('event_id =?', event.id)
-
     if comment_list == []
       puts "No TicTalk for this event yet."
       ticket_options(event)
@@ -441,7 +435,6 @@ class TicTalkApp
 
   def self.view_comments_past(event)
     comment_list = Review.where('event_id =?', event.id)
-
     if comment_list == []
       puts "No TicTalk for this event yet."
       ticket_options_past(event)
@@ -453,10 +446,10 @@ class TicTalkApp
         else
           "No"
         end
-      x = {}
-      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
-      x[:value] = comment.event_id
-      x
+       x = {}
+       x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
+       x[:value] = comment.event_id
+       x
       end
     end
     selection = @@prompt.select("Select a comment to return to event details:", list)
