@@ -7,10 +7,11 @@ require_relative './models/review'
 require_relative './models/ticket'
 
 
-prompt = TTY::Prompt.new
+
 
 class TicTalkApp
   @@prompt = TTY::Prompt.new
+  @@qty = 0
   attr_accessor :user
 
   def self.call
@@ -198,7 +199,7 @@ class TicTalkApp
 
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
 
-    my_upcoming_events = my_bought_events.select {|event| event.date > DateTime.now.to_s[0..9] }
+    my_upcoming_events = my_bought_events.uniq.select {|event| event.date > DateTime.now.to_s[0..9] }
     #my_upcoming_list = my_upcoming_events.map {|event| event.name }
     my_upcoming_list = my_upcoming_events.map do |event|
      x = {}
@@ -230,7 +231,7 @@ class TicTalkApp
 
   def self.past_events
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
-    my_past_events = my_bought_events.select {|event| event.date < DateTime.now.to_s[0..9] }
+    my_past_events = my_bought_events.uniq.select {|event| event.date < DateTime.now.to_s[0..9] }
     if my_past_events == []
       system "clear"
       puts "You don\'t have any past events yet."
@@ -275,9 +276,10 @@ class TicTalkApp
   def self.display_event(selection)
     system "clear"
     display = Event.find(selection)
+    qty = Ticket.where('event_id = ? AND user_id = ?', selection, @user.id)
     puts "Selected Event:"
     puts "="*30
-    puts "Date: #{display.date}", "Name: #{display.name}", "Venue: #{display.venue}", "Location: #{display.location}", "Starting Price: $#{display.price}"
+    puts "Date: #{display.date}", "Name: #{display.name}", "Venue: #{display.venue}", "Location: #{display.location}", "Starting Price: $#{display.price}", "Number of Tickets #{qty.count}"
     puts "="*30
     display
   end
@@ -295,6 +297,8 @@ class TicTalkApp
     elsif
       choice == "Buy a ticket"
       system "clear"
+      puts "How many tickets do you want?"
+      @@qty = gets.chomp.to_i
       self.buy_a_ticket(display)
       puts "Great! What would you like to do next?"
       main_menu
@@ -337,21 +341,28 @@ class TicTalkApp
   end
 
   def self.add_to_wishlist(display)
-    x = Ticket.create(user_id: @user.id, event_id: display.id, status: "wish")
+    Ticket.create(user_id: @user.id, event_id: display.id, status: "wish")
   end
 
   def self.buy_a_ticket(display)
-
-    x = Ticket.create(user_id: @user.id, event_id: display.id, status: "bought")
+    @@qty.times do
+      Ticket.create(user_id: @user.id, event_id: display.id, status: "bought")
+    end
   end
 
   def self.update_ticket_status(selection)
+    ticket = Ticket.find(selection)
+    event = Event.find(ticket.event_id)
+    puts "How many tickets would you like total?"
+    @@qty = gets.chomp.to_i
     Ticket.update(selection, :status => "bought")
+    buy_a_ticket(event)
     puts "Great! What would you like to do next?"
     main_menu
   end
 
   def self.delete_ticket(selection)
+
     Ticket.delete(selection)
     puts "We have cleared that out for you. What would you like next?"
     main_menu
@@ -419,7 +430,7 @@ class TicTalkApp
 
   def self.view_comments_past(event)
     comment_list = Review.where('event_id =?', event.id)
-    binding.pry
+
     if comment_list == []
       puts "No TicTalk for this event yet."
       ticket_options_past(event)
@@ -438,7 +449,7 @@ class TicTalkApp
       end
     end
     selection = @@prompt.select("Select a comment to return to event details:", list)
-    binding.pry
+
     # display_event(selection)
     ticket_options_past(event)
   end
