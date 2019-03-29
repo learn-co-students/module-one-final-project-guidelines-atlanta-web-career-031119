@@ -686,7 +686,7 @@ def update_user_rating_review(current_user, movie_list)
             if rating == 'main menu' or rating == 'main' or rating == 'm'
                 user_menu(current_user)
             end
-            check_responses(rating, 'user')
+            check_responses(rating)
             if rating.to_f != 0.0
                 rating = rating.to_f.round(1)
             end 
@@ -700,7 +700,7 @@ def update_user_rating_review(current_user, movie_list)
             puts " Enter in your new movie review: "
             print " => "
             review = gets.chomp.downcase
-            check_responses(review, 'user')
+            check_responses(review)
             if review == 'main menu' or review == 'main' or review == 'm'
                 user_menu(current_user)
             end
