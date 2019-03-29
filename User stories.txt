@@ -8,13 +8,14 @@
 
 * User stories for the future growth of this app *
 
-6)  As a user, I would like to have movies suggested to me based on the movies I tend to track/watch
-7)  As a user, I want upcoming releases (including an option for indie films) that fit my tastes suggested       to me along with their release date so I can plan ahead
-8)  As a user, I would like to be able to track actors/actresses and be notified of projects they are
+6)  As a user, I would love to be able to add/remove multiple items from my list at a time
+7)  As a user, I would like to have movies suggested to me based on the movies I tend to track/watch
+8)  As a user, I want upcoming releases (including an option for indie films) that fit my tastes suggested       to me along with their release date so I can plan ahead
+9)  As a user, I would like to be able to track actors/actresses and be notified of projects they are
     currently working on/involved in (including an option to track/follow indie projects)
-9)  As a user, I want the ability to track more than just movies. Things like books & authors, video games,      and animations/anime
-10) As a user, I definitely want a GUI that is clean and sleek, has a dark mode and a plethora of other          useful options to allow me to configure the app to work the way that I want (things like themes)
-11) As a user, I would like to have the ability to interact with other users in some capacity
+10)  As a user, I want the ability to track more than just movies. Things like books & authors, video games,      and animations/anime
+11) As a user, I definitely want a GUI that is clean and sleek, has a dark mode and a plethora of other          useful options to allow me to configure the app to work the way that I want (things like themes)
+12) As a user, I would like to have the ability to interact with other users in some capacity
 
 
 ** Things I've learned while working on this project **
