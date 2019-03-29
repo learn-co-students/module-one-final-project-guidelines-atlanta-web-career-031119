@@ -87,7 +87,7 @@ class TicTalkApp
   def self.by_date
     entry = @@prompt.ask("Please enter the date you want to look for (YYYY-MM-DD):")
     list = Event.where('date = ?', entry)
-    list2= list.select {|event| event.date > DateTime.now.to_s[0..9] }
+    list2= list.select {|event| event.date >= DateTime.now.to_s[0..9] }
     if list2 == []
       puts "Sorry no events on this day. Choose again."
       self.by_date
@@ -107,7 +107,7 @@ class TicTalkApp
   def self.by_location
     entry = @@prompt.ask("Please enter the city you want to search:")
     list = Event.where('location = ?', entry)
-    list2= list.select {|event| event.date > DateTime.now.to_s[0..9] }
+    list2= list.select {|event| event.date >= DateTime.now.to_s[0..9] }
     if list2 == []
       puts "Sorry no events in this location. Choose again."
       self.by_location
@@ -128,12 +128,17 @@ class TicTalkApp
     list = Event.all.map { |x| x.venue  }
     entry = @@prompt.select("Please select from the following venues:", list.uniq)
     events = Event.where('venue = ?', entry)
-    list2= events.select {|event| event.date > DateTime.now.to_s[0..9] }
-    choices = list2.map do |event|
-     x = {}
-     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
-     x[:value] = event.id
-     x
+    list2= events.select {|event| event.date >= DateTime.now.to_s[0..9] }
+    if list2 == []
+      puts "Sorry no events in this venue. Choose again."
+      self.by_venue
+    else
+     choices = list2.map do |event|
+      x = {}
+      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
+      x[:value] = event.id
+      x
+     end
    end
     selection = @@prompt.select("Select Your Event", choices)
     display = display_event(selection)
@@ -144,12 +149,17 @@ class TicTalkApp
     list = Event.all.map { |x| x.genre  }
     entry = @@prompt.select("Please select from the following genres:", list.uniq)
     events = Event.where('genre = ?', entry)
-    list2= events.select {|event| event.date > DateTime.now.to_s[0..9] }
-    choices = list2.map do |event|
-     x = {}
-     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
-     x[:value] = event.id
-     x
+    list2= events.select {|event| event.date >= DateTime.now.to_s[0..9] }
+    if list2 == []
+      puts "Sorry no events in this genre. Choose again."
+      self.by_genre
+    else
+     choices = list2.map do |event|
+      x = {}
+      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
+      x[:value] = event.id
+      x
+     end
    end
     selection = @@prompt.select("Select Your Event", choices)
     display = display_event(selection)
@@ -160,16 +170,21 @@ class TicTalkApp
     list = Event.all.map { |x| x.name  }
     entry = @@prompt.select("Please select from the following events:", list.uniq)
     events = Event.where('name = ?', entry)
-    list2= events.select {|event| event.date > DateTime.now.to_s[0..9] }
-    choices = list2.map do |event|
-     x = {}
-     x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
-     x[:value] = event.id
-     x
-   end
-    selection = @@prompt.select("Select Your Event", choices)
-    display = display_event(selection)
-    ticket_options(display)
+    list2= events.select {|event| event.date >= DateTime.now.to_s[0..9] }
+    if list2 == []
+      puts "Sorry no current events with this name. Choose again."
+      self.by_name
+    else
+     choices = list2.map do |event|
+      x = {}
+      x[:name] = "#{event.name}\nDate: #{event.date} Venue: #{event.venue}"
+      x[:value] = event.id
+      x
+     end
+    end
+     selection = @@prompt.select("Select Your Event", choices)
+     display = display_event(selection)
+     ticket_options(display)
   end
 
   def self.wish_list
@@ -295,8 +310,7 @@ class TicTalkApp
     elsif
       choice == "Buy a ticket"
       system "clear"
-      puts "How many tickets do you want?"
-      @@qty = gets.chomp.to_i
+      @@qty = get_qty
       self.buy_a_ticket(display)
       puts "Great! What would you like to do next?"
       main_menu
@@ -351,8 +365,7 @@ class TicTalkApp
   def self.update_ticket_status(selection)
     ticket = Ticket.find(selection)
     event = Event.find(ticket.event_id)
-    puts "How many tickets would you like total?"
-    @@qty = gets.chomp.to_i
+    @@qty = get_qty
     Ticket.update(selection, :status => "bought")
     buy_a_ticket(event)
     puts "Great! What would you like to do next?"
@@ -447,14 +460,18 @@ class TicTalkApp
       end
     end
     selection = @@prompt.select("Select a comment to return to event details:", list)
-
-    # display_event(selection)
     ticket_options_past(event)
   end
 
-  #def self.find_or_create_ticket(display, selection)
-  #  if Ticket.where('user_id = ? AND event_id = ? AND status = ?', @user.id, display.id, "wish")
-
+  def self.get_qty
+    puts "How many tickets do you want?"
+    qty = gets.chomp.to_i
+    if qty > 10
+      puts "No more than 10 tickets per purchase."
+      get_qty
+    end
+    qty
+  end
 
 
 end
