@@ -66,35 +66,43 @@ class CommandLineInterface
   def main_menu
     puts ""
     puts "Main Menu"
-    puts "View a list of all courses. (1)"
-    puts "View all courses offered for your grade level. (2)"
-    puts "Add a course to the list of courses. (3)"
-    puts "Add a course to your schedule. (4)"
-    puts "View all materials for a course (5)"
-    puts "Update materials needed for a course. (6)"
-    puts "View all materials for a grade. (7)"
-    puts "See all users in a grade. (8)"
-    puts "Exit Application (9)."
+    puts "View my schedule. (1)"
+    puts "Add a course to your schedule. (2)"
+    puts "View all courses offered for your grade level. (3)"
+    puts "View a list of all courses. (4)"
+    puts "Add a course to the list of courses. (5)"
+    puts "View all materials for a course. (6)"
+    puts "Update materials needed for a course. (7)"
+    puts "View all materials for a grade. (8)"
+    puts "See all users in a grade. (9)"
+    puts "Exit Application. (10)"
 
     user_input = gets.chomp
     if user_input == "1"
-      all_courses
+      my_schedule
     elsif user_input == "2"
-      courses_for_your_grade
-    elsif user_input == "3"
-      add_course_menu
-    elsif user_input == "4"
       add_course_to_schedule
+    elsif user_input == "3"
+      courses_for_your_grade
+    elsif user_input == "4"
+      all_courses
     elsif user_input == "5"
-      materials_for_course
+      add_course_menu
     elsif user_input == "6"
-      update_materials
+      materials_for_course
     elsif user_input == "7"
-      materials_for_grade
+      update_materials
     elsif user_input == "8"
+      materials_for_grade
+    elsif user_input == "9"
       all_users_in_x_grade
-    else user_input == "9"
+    elsif user_input == "10"
       exit
+    else
+      puts ""
+      puts "Please select from one of these options:"
+      puts ""
+      main_menu
     end
   end
 
