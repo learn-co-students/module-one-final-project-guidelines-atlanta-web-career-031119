@@ -190,6 +190,7 @@ class TicTalkApp
   def self.wish_list
     wish_tickets = Ticket.where('status = ? AND user_id = ?', 'wish', @user.id)
     if wish_tickets == []
+      system "clear"
       puts "You haven't chosen anything yet!?!"
       main_menu
     else
@@ -209,19 +210,23 @@ class TicTalkApp
   end
 
   def self.upcoming_events
-
     my_bought_events = self.bought_list.map {|ticket| Event.find(ticket.event_id) }
-
-    my_upcoming_events = my_bought_events.uniq.select {|event| event.date > DateTime.now.to_s[0..9] }
-    my_upcoming_list = my_upcoming_events.map do |event|
-     x = {}
-     x[:name] = event.name
-     x[:value] = event.id
-     x
-   end
-    selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
-    display = display_event(selection)
-    ticket_options_upcoming(display)
+    if my_bought_events == []
+      system "clear"
+      puts "You don\'t have any upcoming events!"
+      main_menu
+    else
+      my_upcoming_events = my_bought_events.uniq.select {|event| event.date >= DateTime.now.to_s[0..9] }
+      my_upcoming_list = my_upcoming_events.map do |event|
+        x = {}
+        x[:name] = event.name
+        x[:value] = event.id
+        x
+      end
+      selection = @@prompt.select("Here are your Upcoming Events:", my_upcoming_list)
+      display = display_event(selection)
+      ticket_options_upcoming(display)
+    end
   end
 
   def self.ticket_options_upcoming(display)
@@ -255,10 +260,10 @@ class TicTalkApp
      x[:value] = event.id
      x
     end
-   end
     selection = @@prompt.select("Here are your Past events", my_past_list)
     display = display_event(selection)
     ticket_options_past(display)
+    end
   end
 
   def self.ticket_options_past(display)
@@ -397,7 +402,7 @@ class TicTalkApp
           "No"
         end
       x = {}
-      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
+      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}, - #{comment.created_at}\n TicTalk:\n #{comment.content}"
       x[:value] = comment.event_id
       x
     end
@@ -408,7 +413,6 @@ class TicTalkApp
 
   def self.view_comments_upcoming(event)
     comment_list = Review.where('event_id =?', event.id)
-
     if comment_list == []
       puts "No TicTalk for this event yet."
       ticket_options_upcoming(event)
@@ -421,7 +425,7 @@ class TicTalkApp
           "No"
         end
       x = {}
-      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
+      x[:name] = "Username: #{n.name}, Recommend?: #{rcm}, - #{comment.created_at}\n TicTalk:\n #{comment.content}"
       x[:value] = comment.event_id
       x
     end
@@ -447,7 +451,7 @@ class TicTalkApp
           "No"
         end
        x = {}
-       x[:name] = "Username: #{n.name}, Recommend?: #{rcm}\n TicTalk:\n #{comment.content}"
+       x[:name] = "Username: #{n.name}, Recommend?: #{rcm}, - #{comment.created_at}\n TicTalk:\n #{comment.content}"
        x[:value] = comment.event_id
        x
       end
