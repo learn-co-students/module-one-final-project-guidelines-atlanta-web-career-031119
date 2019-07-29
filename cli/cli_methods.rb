@@ -58,14 +58,19 @@ def user_login
       end
       if User.exists?(['name LIKE ?', "%#{result}%"])
         user = User.find_by_name(result)
-        enter_password(user)
-        puts "Welcome back, #{result}!"
-        return user
+        if enter_password(user)
+          puts "Welcome back, #{result}!"
+          return user
+        else 
+          user_login
+        end
       else
-        puts "Hmmm, I don't see that name..."
-        yes_or_no = prompt.yes?("Would you like to create an account?")
-        if yes_or_no == true
+          puts "Hmmm, I don't see that name..."
+          yes_or_no = prompt.yes?("Would you like to create an account?")
+          if yes_or_no
             create_user(result)
+          else
+            user_login
         end
     end
 end

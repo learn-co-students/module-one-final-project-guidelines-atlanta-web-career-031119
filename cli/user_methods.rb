@@ -122,11 +122,11 @@ end
 
 def enter_password(user)
     password = @prompt.mask("Password:")
-    if user.authenticate(password) == true
-    end
-    if user.authenticate(password) == false
+    if user.authenticate(password)
+        return true
+    else
     puts "incorrect password"
-    user_login
+    return false
     end
 end
 
