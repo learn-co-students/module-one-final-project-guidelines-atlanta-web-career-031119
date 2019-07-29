@@ -46,7 +46,10 @@ module List
         puts " "
         puts "Likes " + @pastel.cyan.bold("#{num_of_likes(post)}")
         puts @pastel.green("-")*50
-        like?(post)
+        if post.user_id == @current_user.id 
+        else
+            like?(post)
+        end
         get_comments_for_post(post)
         end
 
